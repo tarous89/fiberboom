@@ -1,0 +1,70 @@
+{
+  "regularity": {
+    "source": "https://doi.org/10.1046/j.1365-2036.1998.00336.x",
+    "unit": "bowel movements/week",
+    "treatment_week": 2,
+    "docusate": 2.9,
+    "psyllium": 3.5
+  },
+  "ldl": {
+    "source": "https://pubmed.ncbi.nlm.nih.gov/30239559/",
+    "unit": "mmol/L",
+    "mean_difference": -0.33,
+    "ci95": [
+      -0.38,
+      -0.27
+    ]
+  },
+  "glucose": {
+    "source": "https://doi.org/10.1038/sj.ejcn.1601398",
+    "table": 1,
+    "minutes": [
+      0,
+      10,
+      20,
+      30,
+      45,
+      60,
+      75,
+      90,
+      120
+    ],
+    "phase1_without_psyllium": [
+      8.66,
+      9.43,
+      10.81,
+      12.02,
+      13.52,
+      14,
+      14.19,
+      13.63,
+      12.54
+    ],
+    "phase2_with_psyllium": [
+      7.73,
+      7.98,
+      9.05,
+      10.46,
+      12.06,
+      12.83,
+      12.51,
+      11.93,
+      10.76
+    ],
+    "unit": "mmol/L",
+    "design": "sequential non-randomized"
+  },
+  "fullness": {
+    "source": "https://doi.org/10.1016/j.appet.2016.04.041",
+    "table": 4,
+    "study": 2,
+    "n": 40,
+    "scale": [
+      -100,
+      100
+    ],
+    "placebo": -21.7,
+    "psyllium": -14.9,
+    "measure": "adjusted mean SLIM score across post-breakfast period"
+  }
+}

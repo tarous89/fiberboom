@@ -1,0 +1,146 @@
+{
+  "images": [
+    {
+      "name": "almonds.webp",
+      "before": 373890,
+      "after": 281502
+    },
+    {
+      "name": "chocolate-box-v5.png",
+      "before": 1089913,
+      "after": 111016
+    },
+    {
+      "name": "chocolate-pack.webp",
+      "before": 144862,
+      "after": 118760
+    },
+    {
+      "name": "chocolate-pieces.webp",
+      "before": 62030,
+      "after": 41658
+    },
+    {
+      "name": "chocolate.webp",
+      "before": 141066,
+      "after": 111736
+    },
+    {
+      "name": "cocoa-butter.webp",
+      "before": 120252,
+      "after": 76562
+    },
+    {
+      "name": "date-box-v5.png",
+      "before": 994851,
+      "after": 114810
+    },
+    {
+      "name": "date-pack.webp",
+      "before": 167852,
+      "after": 136358
+    },
+    {
+      "name": "date.webp",
+      "before": 163812,
+      "after": 130648
+    },
+    {
+      "name": "dates.webp",
+      "before": 355012,
+      "after": 268876
+    },
+    {
+      "name": "drink-complete.png",
+      "before": 1371604,
+      "after": 169308
+    },
+    {
+      "name": "eat-complete.png",
+      "before": 1373556,
+      "after": 169836
+    },
+    {
+      "name": "footer-logo-v5.png",
+      "before": 85279,
+      "after": 18002
+    },
+    {
+      "name": "hero.webp",
+      "before": 273856,
+      "after": 208772
+    },
+    {
+      "name": "human-background.webp",
+      "before": 162704,
+      "after": 106008
+    },
+    {
+      "name": "logo.webp",
+      "before": 100108,
+      "after": 85528
+    },
+    {
+      "name": "pistachio-box-v5.png",
+      "before": 915859,
+      "after": 97326
+    },
+    {
+      "name": "pistachio-pack.webp",
+      "before": 159266,
+      "after": 127814
+    },
+    {
+      "name": "pistachio.webp",
+      "before": 174178,
+      "after": 141490
+    },
+    {
+      "name": "pistachios.webp",
+      "before": 383356,
+      "after": 300096
+    },
+    {
+      "name": "psyllium-plant-v5.png",
+      "before": 348448,
+      "after": 98632
+    },
+    {
+      "name": "result-complete-v2.png",
+      "before": 1404106,
+      "after": 172426
+    },
+    {
+      "name": "walnuts.webp",
+      "before": 409584,
+      "after": 316080
+    },
+    {
+      "name": "hero-morning-exit.png",
+      "before": 2527545,
+      "after": 61030
+    },
+    {
+      "name": "recognition.webp",
+      "before": 166240,
+      "after": 106122
+    },
+    {
+      "name": "two-spoons.webp",
+      "before": 316340,
+      "after": 251664
+    },
+    {
+      "name": "walking.webp",
+      "before": 159266,
+      "after": 101638
+    },
+    {
+      "name": "toilet-hero.png",
+      "before": 2792641,
+      "after": 62870
+    }
+  ],
+  "total_original_bytes": 16737476,
+  "total_optimized_bytes": 3986568
+}
