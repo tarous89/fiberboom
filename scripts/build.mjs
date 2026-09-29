@@ -1,8 +1,13 @@
 import {cp,rm,access,readdir,readFile,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
+import {buildCommerce} from './commerce.mjs';
 await access('site/index.html');
 await rm('dist',{recursive:true,force:true});
 await cp('site','dist',{recursive:true});
+for(const path of ['dist/index.html',...['light','psyllium','boom'].map(v=>`dist/${v}/en/index.html`)]){
+ const html=await readFile(path,'utf8');await writeFile(path,html.replace('</body>','<script defer src="/commerce/landing.js"></script></body>'));
+}
+await buildCommerce();
 
 // Informational privacy notice only. No consent manager, tracking switches or storage.
 const notice = `<aside id="fb-beta-notice" class="fb-beta-notice" aria-labelledby="fb-beta-notice-title"><div><strong id="fb-beta-notice-title">Your privacy</strong><p>We use cookies and similar technologies to understand how our website is used and improve your experience. Read our <a href="/privacy/en/">Privacy Policy</a> for information about how we handle your data and your rights.</p></div><button type="button" id="fb-beta-notice-dismiss" aria-label="Dismiss privacy notice">Dismiss</button></aside>`;

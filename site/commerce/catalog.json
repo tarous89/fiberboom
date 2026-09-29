@@ -1,0 +1,153 @@
+{
+  "language": "en",
+  "sampleData": true,
+  "orderingEnabled": false,
+  "flavors": {
+    "chocolate": {
+      "name": "Dark Chocolate",
+      "description": "Deep cocoa. A mellow finish. A little crunch in every bite.",
+      "ingredients": "Psyllium husk, almond butter, cocoa butter, cocoa powder, oat flour, chicory fibre, vanilla, sea salt.",
+      "allergens": "Contains nuts and oats (gluten). Sample allergen declaration; final formulation and cross-contact information pending.",
+      "weight": 45,
+      "nutrition": {
+        "kcal": 145,
+        "kj": 606,
+        "fat": 9,
+        "saturates": 3.5,
+        "carbs": 8,
+        "sugars": 1.5,
+        "fibre": 10,
+        "protein": 4,
+        "salt": 0.12
+      },
+      "pack": "/assets/chocolate-pack-de15bd281a8b.webp",
+      "box": "/assets/chocolate-box-v5-0d9c2308c1e9.webp",
+      "bar": "/assets/chocolate-92c2472565f3.webp"
+    },
+    "date": {
+      "name": "Dates & Nuts",
+      "description": "Soft date notes meet a satisfyingly nutty crunch.",
+      "ingredients": "Dates, psyllium husk, walnuts, almond butter, oat flour, cocoa butter, cinnamon, sea salt.",
+      "allergens": "Contains nuts and oats (gluten). Sample allergen declaration; final formulation and cross-contact information pending.",
+      "weight": 45,
+      "nutrition": {
+        "kcal": 155,
+        "kj": 649,
+        "fat": 8,
+        "saturates": 1.5,
+        "carbs": 14,
+        "sugars": 8,
+        "fibre": 9,
+        "protein": 4,
+        "salt": 0.1
+      },
+      "pack": "/assets/date-pack-c423a9cc4d82.webp",
+      "box": "/assets/date-box-v5-9b34fe30de8e.webp",
+      "bar": "/assets/date-126d8053de75.webp"
+    },
+    "pistachio": {
+      "name": "Pistachio",
+      "description": "Rounded pistachio flavour with a smooth, buttery finish.",
+      "ingredients": "Psyllium husk, pistachios, cocoa butter, almond butter, oat flour, chicory fibre, vanilla, sea salt.",
+      "allergens": "Contains nuts and oats (gluten). Sample allergen declaration; final formulation and cross-contact information pending.",
+      "weight": 45,
+      "nutrition": {
+        "kcal": 150,
+        "kj": 628,
+        "fat": 9,
+        "saturates": 3,
+        "carbs": 9,
+        "sugars": 2,
+        "fibre": 10,
+        "protein": 4.5,
+        "salt": 0.11
+      },
+      "pack": "/assets/pistachio-pack-940b1768b0ac.webp",
+      "box": "/assets/pistachio-box-v5-b49bd64ed0a5.webp",
+      "bar": "/assets/pistachio-e2c2604c2b80.webp"
+    }
+  },
+  "packs": [
+    7,
+    14,
+    30
+  ],
+  "markets": {
+    "DE": {
+      "name": "Germany",
+      "currency": "EUR",
+      "prices": {
+        "7": 1250,
+        "14": 2290,
+        "30": 4590
+      },
+      "delivery": [
+        {
+          "id": "de-home",
+          "name": "Home delivery",
+          "description": "DHL parcel delivery — planned service",
+          "fee": null
+        }
+      ],
+      "payments": [
+        "Credit / debit card",
+        "PayPal",
+        "Klarna",
+        "Apple Pay",
+        "Google Pay",
+        "SEPA Direct Debit",
+        "Bank transfer"
+      ]
+    },
+    "PL": {
+      "name": "Poland",
+      "currency": "PLN",
+      "prices": {
+        "7": 5500,
+        "14": 9900,
+        "30": 19900
+      },
+      "delivery": [
+        {
+          "id": "pl-locker",
+          "name": "Parcel locker",
+          "description": "InPost Paczkomat — planned service",
+          "fee": null
+        },
+        {
+          "id": "pl-home",
+          "name": "Home delivery",
+          "description": "InPost / DPD courier — planned service",
+          "fee": null
+        }
+      ],
+      "payments": [
+        "BLIK",
+        "Przelewy24",
+        "Credit / debit card",
+        "PayPal",
+        "Klarna",
+        "Apple Pay",
+        "Google Pay",
+        "Bank transfer"
+      ]
+    }
+  },
+  "versions": {
+    "light": {
+      "eyebrow": "YOUR DAILY MOMENT",
+      "title": "Make room for feeling light.",
+      "description": "Pick your flavour. Find your rhythm. Make fibre the easy part of your day."
+    },
+    "psyllium": {
+      "eyebrow": "FIBRE, MADE SIMPLE",
+      "title": "Psyllium. In a better format.",
+      "description": "Explore the flavour, ingredients and nutrition behind your daily fibre routine."
+    },
+    "boom": {
+      "eyebrow": "PICK YOUR BOOM",
+      "title": "Good taste. Great routine.",
+      "description": "Three bold flavours. One very simple way to make fibre part of your day."
+    }
+  }
+}
