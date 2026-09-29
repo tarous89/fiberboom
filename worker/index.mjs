@@ -7,7 +7,8 @@ async function mac(secret,text){const key=await crypto.subtle.importKey('raw',en
 function equal(a,b){let diff=a.length^b.length;for(let i=0;i<Math.max(a.length,b.length);i++)diff|=(a.charCodeAt(i)||0)^(b.charCodeAt(i)||0);return diff===0}
 const headers={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','X-Robots-Tag':'noindex, nofollow','Referrer-Policy':'no-referrer'};
 function json(data,status=200,extra={}){return new Response(JSON.stringify(data),{status,headers:{...headers,'Content-Type':'application/json',...extra}})}
-function configured(env){return env.DB&&env.ADMIN_PIN&&env.SESSION_SECRET?.length>=32}
+export function setupProblems(env){const problems=[];if(!env.DB)problems.push('DB database binding is missing');if(typeof env.ADMIN_PIN!=='string'||!env.ADMIN_PIN.length)problems.push('ADMIN_PIN runtime secret is missing');if(typeof env.SESSION_SECRET!=='string'||!env.SESSION_SECRET.length)problems.push('SESSION_SECRET runtime secret is missing');else if(env.SESSION_SECRET.length<32)problems.push('SESSION_SECRET must contain at least 32 characters');return problems}
+function configured(env){return setupProblems(env).length===0}
 async function authorized(request,env){if(!configured(env))return false;const token=request.headers.get('Cookie')?.match(/(?:^|;\s*)fb_admin=([^;]+)/)?.[1]||'';const [expiry,nonce,signature]=token.split('.');if(!/^\d+$/.test(expiry)||!nonce||!signature||Number(expiry)<Date.now()||Number(expiry)>Date.now()+9*3600000)return false;return equal(signature,await mac(env.SESSION_SECRET,expiry+'.'+nonce));}
 async function limit(db,key,max,window){const bucket=Math.floor(Date.now()/window);const result=await db.prepare('INSERT INTO limits(key,count,expires) VALUES(?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1 RETURNING count').bind(key+':'+bucket,(bucket+1)*window).first();return result.count<=max}
 async function readBody(request,max=60000){const reader=request.body?.getReader();if(!reader)throw Error('body');let size=0,chunks=[];for(;;){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>max){await reader.cancel();throw Error('size')}chunks.push(value)}let data=new Uint8Array(size),offset=0;for(const c of chunks){data.set(c,offset);offset+=c.length}return JSON.parse(new TextDecoder().decode(data))}
@@ -29,7 +30,7 @@ async function report(db,url){const days=Math.min(90,Math.max(1,Number(url.searc
  query(`SELECT date(time/1000,'unixepoch') day,COUNT(DISTINCT page) views,COUNT(DISTINCT visitor) visitors FROM events WHERE ${where} GROUP BY day ORDER BY day`)
  ]);return {days,variant,totals:totals.results[0],pages:pages.results,events:events.results,sources:sources.results,visitors:visitors.results,scroll:scroll.results,timeline:timeline.results};}
 async function handle(request,env){const url=new URL(request.url),path=url.pathname;const admin=path==='/admin'||path==='/admin/';if(!admin&&!path.startsWith('/api/'))return env.ASSETS.fetch(request);
- if(admin){const nonce=crypto.randomUUID();return new Response(adminPage(await authorized(request,env),configured(env),nonce),{headers:{...headers,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':`default-src 'none'; script-src 'nonce-${nonce}'; style-src 'nonce-${nonce}'; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`}})}
+ if(admin){const nonce=crypto.randomUUID();return new Response(adminPage(await authorized(request,env),configured(env),nonce).replace('Setup required: bind the D1 database and add ADMIN_PIN and SESSION_SECRET.', 'Setup required: '+setupProblems(env).join('; ')+'.'),{headers:{...headers,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':`default-src 'none'; script-src 'nonce-${nonce}'; style-src 'nonce-${nonce}'; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`}})}
  if(!env.DB)return json({error:'Analytics database not configured'},503);
  await init(env.DB);
  if(request.method==='POST'&&request.headers.get('Origin')!==url.origin)return json({error:'Invalid origin'},403);
@@ -41,7 +42,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  await env.DB.batch(rows.map(row=>env.DB.prepare('INSERT OR IGNORE INTO events VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(...row)));return json({stored:rows.length});
  }
  if(path==='/api/admin/login'&&request.method==='POST'){
- if(!configured(env))return json({error:'Set DB, ADMIN_PIN and SESSION_SECRET in Cloudflare first.'},503);
+ if(!configured(env))return json({error:'Setup required: '+setupProblems(env).join('; ')+'.'},503);
  const ip=await mac(env.SESSION_SECRET,request.headers.get('CF-Connecting-IP')||'unknown');
  if(!await limit(env.DB,'login:'+ip,5,900000)||!await limit(env.DB,'login:global',100,900000))return json({error:'Too many attempts. Try again in 15 minutes.'},429);
  let body;try{body=await readBody(request,1000)}catch{return json({error:'Invalid request'},400)}
