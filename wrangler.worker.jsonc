@@ -17,5 +17,12 @@
     "crons": [
       "17 3 * * *"
     ]
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fiberboom-analytics",
+      "database_id": "18d7c7dd-a2ff-4ba2-b7f1-e58af138194c"
+    }
+  ]
 }
