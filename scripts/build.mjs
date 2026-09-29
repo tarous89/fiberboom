@@ -4,9 +4,9 @@ await access('site/index.html');
 await rm('dist',{recursive:true,force:true});
 await cp('site','dist',{recursive:true});
 
-// Informational beta notice only. No consent manager, tracking switches or storage.
-const notice = `<aside id="fb-beta-notice" class="fb-beta-notice" aria-labelledby="fb-beta-notice-title"><div><strong id="fb-beta-notice-title">Cookies &amp; beta privacy</strong><p>Consent for beta analytics is handled through your invitation. See our <a href="/privacy/en/">privacy policy</a> for current data practices. Dismissing this notice does not change your consent.</p></div><button type="button" id="fb-beta-notice-dismiss" aria-label="Dismiss beta privacy notice">Dismiss</button></aside>`;
-const css = `#fb-beta-notice{position:fixed;inset:auto 20px 20px;z-index:1000;box-sizing:border-box;max-width:820px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;gap:24px;background:#0d3026;color:#fff;border:1px solid #ffffff30;border-radius:16px;box-shadow:0 12px 40px #0003;font:14px/1.5 system-ui,sans-serif;text-align:left}#fb-beta-notice[hidden]{display:none}#fb-beta-notice strong{font-size:15px;color:#fff}#fb-beta-notice p{margin:6px 0 0;color:#e1eae6;font:inherit;max-width:none}#fb-beta-notice a{color:#d4ef47;text-decoration:underline;text-underline-offset:3px}#fb-beta-notice button{flex-shrink:0;min-height:44px;padding:10px 18px;border:0;border-radius:8px;background:#d4ef47;color:#0d3026;font:600 14px/1.4 system-ui,sans-serif;cursor:pointer}#fb-beta-notice :focus-visible{outline:2px solid #fff;outline-offset:4px}@media(max-width:600px){#fb-beta-notice{inset:auto 12px max(12px,env(safe-area-inset-bottom));padding:16px;gap:12px;flex-direction:column;align-items:stretch}#fb-beta-notice button{align-self:flex-end}}`;
+// Informational privacy notice only. No consent manager, tracking switches or storage.
+const notice = `<aside id="fb-beta-notice" class="fb-beta-notice" aria-labelledby="fb-beta-notice-title"><div><strong id="fb-beta-notice-title">Your privacy</strong><p>We use cookies and similar technologies to understand how our website is used and improve your experience. Read our <a href="/privacy/en/">Privacy Policy</a> for information about how we handle your data and your rights.</p></div><button type="button" id="fb-beta-notice-dismiss" aria-label="Dismiss privacy notice">Dismiss</button></aside>`;
+const css = `#fb-beta-notice{position:fixed;inset:auto 20px 20px auto;z-index:1000;box-sizing:border-box;width:360px;max-width:calc(100vw - 40px);margin:0;padding:20px;display:flex;flex-direction:column;align-items:stretch;gap:16px;background:#0d3026;color:#fff;border:1px solid #ffffff30;border-radius:16px;box-shadow:0 12px 40px #0003;font:14px/1.5 system-ui,sans-serif;text-align:left}#fb-beta-notice[hidden]{display:none}#fb-beta-notice strong{font-size:15px;color:#fff}#fb-beta-notice p{margin:6px 0 0;color:#e1eae6;font:inherit;max-width:none}#fb-beta-notice a{color:#d4ef47;text-decoration:underline;text-underline-offset:3px}#fb-beta-notice button{align-self:flex-end;flex-shrink:0;min-height:44px;padding:10px 18px;border:0;border-radius:8px;background:#d4ef47;color:#0d3026;font:600 14px/1.4 system-ui,sans-serif;cursor:pointer}#fb-beta-notice :focus-visible{outline:2px solid #fff;outline-offset:4px}@media(max-width:600px){#fb-beta-notice{inset:auto 12px max(12px,env(safe-area-inset-bottom)) auto;max-width:calc(100vw - 24px);padding:16px;gap:12px;flex-direction:column;align-items:stretch}#fb-beta-notice button{align-self:flex-end}}`;
 await writeFile('dist/beta-notice.css',css);
 await writeFile('dist/beta-notice.js',`// Dismissal is presentation-only; no consent is inferred or persisted.\ndocument.getElementById('fb-beta-notice-dismiss')?.addEventListener('click',()=>{document.getElementById('fb-beta-notice').hidden=true;});\n`);
 async function addNotice(directory){
@@ -22,7 +22,7 @@ async function addNotice(directory){
  }
 }
 await addNotice('dist');
-console.log('Built Fiberboom pages with informational beta privacy notice.');
+console.log('Built Fiberboom pages with informational privacy notice.');
 
 // Persist the D1 binding in deployment configuration when the Cloudflare build variable is set.
 if(process.env.FIBERBOOM_DATABASE_ID){
