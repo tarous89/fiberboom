@@ -1,0 +1,22 @@
+/* Beta analytics: invitation consent is obtained before participation. */
+(()=>{
+ if(location.pathname.startsWith('/admin'))return;
+ const uuid=()=>crypto.randomUUID();const now=Date.now();let visitor=uuid(),session=uuid(),persistent=false;
+ try{const old=JSON.parse(localStorage.getItem('fb_visitor')||'null');if(old&&old.expires>now)visitor=old.id;localStorage.setItem('fb_visitor',JSON.stringify({id:visitor,expires:now+90*86400000}));const s=JSON.parse(localStorage.getItem('fb_session')||'null');if(s&&now-s.last<1800000)session=s.id;localStorage.setItem('fb_session',JSON.stringify({id:session,last:now}));persistent=true;}catch{}
+ const page=uuid();let sequence=0,active=0,last=performance.now(),nextTime=15,maxScroll=0,scrollSent=0,queue=[],inFlight=false,wasVisible=!document.hidden,lastTouch=0;
+ const known=['/','/light/en/','/psyllium/en/','/boom/en/','/privacy/en/','/terms/en/','/checkout/en/'];const path=known.includes(location.pathname)?location.pathname:'/404.html';const part=path.split('/').filter(Boolean);const variant=path==='/'?'light':(['light','psyllium','boom'].includes(part[0])?part[0]:'shared');
+ const params=new URLSearchParams(location.search);const campaign={};for(const k of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']){if(params.has(k))campaign[k]=params.get(k).slice(0,120);}
+ let referrer='';try{referrer=new URL(document.referrer).hostname}catch{}
+ function event(name,details={}){queue.push({id:uuid(),visitor,session,page,seq:++sequence,name,path,variant,language:document.documentElement.lang||'en',time:Date.now(),active:Math.round(active),scroll:maxScroll,details:{...details,persistent}});if(queue.length>=10)flush();}
+ function measure(){const elapsed=Math.max(0,Math.min(5,(performance.now()-last)/1000));last=performance.now();if(wasVisible){active=Math.min(600,active+elapsed);const height=document.documentElement.scrollHeight-innerHeight;maxScroll=Math.max(maxScroll,Math.min(100,Math.round(height<=0?100:scrollY/height*100)));while(scrollSent+10<=maxScroll){scrollSent+=10;event('scroll_depth',{percent:scrollSent})}if(active>=nextTime&&nextTime<=600){event('active_time',{seconds:nextTime});nextTime=nextTime<60?nextTime+15:nextTime+30;}if(persistent&&Date.now()-lastTouch>=15000){lastTouch=Date.now();try{localStorage.setItem('fb_session',JSON.stringify({id:session,last:Date.now()}))}catch{}}}wasVisible=!document.hidden;}
+ async function flush(){if(inFlight||!queue.length)return;const batch=queue.splice(0,40);inFlight=true;try{const res=await fetch('/api/events',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({events:batch}),keepalive:true,credentials:'same-origin'});if(!res.ok){if(res.status>=500||res.status===429)queue.unshift(...batch);}}catch{queue.unshift(...batch)}finally{queue=queue.slice(-120);inFlight=false;}}
+ event('page_view',{referrer,...campaign});measure();flush();setInterval(measure,1000);setInterval(flush,15000);
+ let scrolling=false;addEventListener('scroll',()=>{if(!scrolling){scrolling=true;requestAnimationFrame(()=>{measure();scrolling=false})}},{passive:true});
+ document.addEventListener('visibilitychange',()=>{measure();event(document.hidden?'page_hidden':'page_visible');flush()});
+ addEventListener('pagehide',()=>{measure();event('page_exit');flush()});
+ document.addEventListener('click',e=>{const target=e.target.closest?.('a,button');if(!target||target.closest('#fb-beta-notice'))return;const d=target.dataset;let name='cta_click',details={label:(target.textContent||target.getAttribute('aria-label')||'').trim().replace(/\s+/g,' ').slice(0,100)};
+ if(d.choice||d.taste){name='flavour_selected';details.flavour=d.choice||d.taste}else if(d.count){name='pack_selected';details.count=Number(d.count)}else if(d.flavour||target.id==='availability'){name='checkout_intent';details.flavour=d.flavour||document.querySelector('#flavour')?.value;details.selection=document.querySelector('#selection')?.textContent?.slice(0,100)}else if(d.scene){name='routine_step';details.step=d.scene}
+ if(target.tagName==='A'){try{const u=new URL(target.href);details.destination=u.origin===location.origin?u.pathname+u.hash:u.protocol==='mailto:'?'email':u.hostname;}catch{}}
+ event(name,details);flush();});
+ document.addEventListener('change',e=>{if(e.target.id==='flavour')event('flavour_selected',{flavour:e.target.value})});
+})();

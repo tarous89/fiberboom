@@ -16,10 +16,19 @@ async function addNotice(directory){
   else if(entry.name.endsWith('.html')){
    let html=await readFile(path,'utf8');
    html=html.replace('</head>','<link rel="stylesheet" href="/beta-notice.css"></head>');
-   html=html.replace('</body>',notice+'<script defer src="/beta-notice.js"></script></body>');
+   html=html.replace('</body>',notice+'<script defer src="/beta-notice.js"></script><script defer src="/analytics.js"></script></body>');
    await writeFile(path,html);
   }
  }
 }
 await addNotice('dist');
 console.log('Built Fiberboom pages with informational beta privacy notice.');
+
+// Persist the D1 binding in deployment configuration when the Cloudflare build variable is set.
+if(process.env.FIBERBOOM_DATABASE_ID){
+ const config=JSON.parse(await readFile('wrangler.worker.jsonc','utf8'));
+ const id=process.env.FIBERBOOM_DATABASE_ID.trim();
+ if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Invalid FIBERBOOM_DATABASE_ID');
+ config.d1_databases=[{binding:'DB',database_name:'fiberboom-analytics',database_id:id}];
+ await writeFile('wrangler.worker.jsonc',JSON.stringify(config,null,2)+'\n');
+}
