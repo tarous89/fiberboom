@@ -168,7 +168,8 @@
     "defaultMarket": "DE",
     "defaultLanguage": "en",
     "publishedLanguages": [
-      "en"
+      "en",
+      "pl"
     ]
   }
 }

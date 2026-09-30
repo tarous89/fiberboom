@@ -1,0 +1,8 @@
+/* Polish headings are longer; preserve the campaign hierarchy without clipping. */
+html[lang=pl] .product-buy h1{font-size:clamp(36px,4.2vw,64px);overflow-wrap:normal}
+html[lang=pl] .campaign-hero h1{font-size:clamp(60px,8vw,118px)}
+html[lang=pl] .restock-copy h2{font-size:clamp(32px,4vw,54px)}
+html[lang=pl] .restock-art>span{font-size:clamp(22px,3vw,38px)}
+header:has(.language-control)>.language-control{margin-left:0}
+@media(max-width:600px){header:has(.language-control){gap:8px}header:has(.language-control) .locale-control{margin-left:auto}header:has(.language-control)>.language-control{margin-left:0}header:has(.language-control) .logo{width:82px}html[lang=pl] .campaign-hero h1{font-size:clamp(50px,12vw,76px)}}
+html[lang=pl] .restock-copy{min-width:0}html[lang=pl] .discount{flex-wrap:wrap}html[lang=pl] .discount span{min-width:120px;flex:1}html[lang=pl] .consent-copy{overflow-wrap:anywhere}@media(max-width:600px){html[lang=pl] .discount{align-items:flex-start;flex-direction:column;gap:8px}html[lang=pl] .discount span{min-width:0}html[lang=pl] .restock-copy{padding:34px 24px 24px}}
