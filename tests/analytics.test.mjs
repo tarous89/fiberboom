@@ -51,3 +51,14 @@ test('Polish journeys and offers retain language and filter independently from E
  const en=await (await worker.fetch(req('/api/admin/report?language=en',null,cookie),e)).json();assert.equal(en.checkout_intents.length,0);assert.equal(en.totals.views,1);
  const redirect=await worker.fetch(req('/boom/pl/checkout/?flavor=date'),e);assert.match(redirect.headers.get('location'),/boom\/pl\/product\/\?flavor=date/);
 });
+
+test('German journeys and offers retain language and filter independently from English',async()=>{
+ const e=env();await worker.fetch(req('/api/events',{events:[event({path:'/light/de/',language:'de'}),event({path:'/light/en/',language:'en'})]}),e);
+ const body={id:crypto.randomUUID(),token:crypto.randomUUID(),version:'light',language:'de',flavor:'date',bars:14,market:'DE',price:2290,currency:'EUR',revision:'2026-09-30-restock-v2'};
+ assert.equal((await worker.fetch(req('/api/checkout-intent',body),e)).status,200);
+ assert.equal((await worker.fetch(req('/api/checkout-intent',{...body,email:'german@example.com',consent:true}),e)).status,200);
+ assert.equal((await worker.fetch(req('/api/checkout-intent',{...body,language:'en'}),e)).status,409);
+ const cookie=await login(e);const pl=await (await worker.fetch(req('/api/admin/report?language=de',null,cookie),e)).json();assert.equal(pl.checkout_intents[0].language,'de');assert.equal(pl.checkout_intents[0].email,'german@example.com');assert.ok(pl.pages.every(p=>p.path.includes('/de/')));
+ const en=await (await worker.fetch(req('/api/admin/report?language=en',null,cookie),e)).json();assert.equal(en.checkout_intents.length,0);assert.equal(en.totals.views,1);
+ const redirect=await worker.fetch(req('/boom/de/checkout/?flavor=date'),e);assert.match(redirect.headers.get('location'),/boom\/de\/product\/\?flavor=date/);
+});

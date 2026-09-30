@@ -1,6 +1,7 @@
 import {cp,rm,access,readdir,readFile,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {applyShared} from './shared.mjs';
+import {buildGerman} from './german.mjs';
 import {buildPolish} from './polish.mjs';
 import {buildCommerce} from './commerce.mjs';
 await access('site/index.html');
@@ -30,6 +31,7 @@ async function addNotice(directory){
 }
 await addNotice('dist');
 await buildPolish();
+await buildGerman();
 console.log('Built Fiberboom pages with informational privacy notice.');
 
 // Persist the D1 binding in deployment configuration when the Cloudflare build variable is set.
