@@ -85,7 +85,7 @@
         {
           "id": "de-home",
           "name": "Home delivery",
-          "description": "DHL parcel delivery — planned service",
+          "description": "DHL parcel delivery \u2014 planned service",
           "fee": null
         }
       ],
@@ -111,13 +111,13 @@
         {
           "id": "pl-locker",
           "name": "Parcel locker",
-          "description": "InPost Paczkomat — planned service",
+          "description": "InPost Paczkomat \u2014 planned service",
           "fee": null
         },
         {
           "id": "pl-home",
           "name": "Home delivery",
-          "description": "InPost / DPD courier — planned service",
+          "description": "InPost / DPD courier \u2014 planned service",
           "fee": null
         }
       ],
@@ -136,18 +136,22 @@
   "versions": {
     "light": {
       "eyebrow": "YOUR DAILY MOMENT",
-      "title": "Make room for feeling light.",
-      "description": "Pick your flavour. Find your rhythm. Make fibre the easy part of your day."
+      "title": "Feel light.<br><em>Every day.</em>",
+      "description": "Pick your flavour. Find your rhythm. Make fibre the easy part of your day.",
+      "footer": "Feel light. Every day."
     },
     "psyllium": {
       "eyebrow": "FIBRE, MADE SIMPLE",
-      "title": "Psyllium. In a better format.",
-      "description": "Explore the flavour, ingredients and nutrition behind your daily fibre routine."
+      "title": "Psyllium husk.<br>Now tastes <em>great.</em>",
+      "description": "Explore the flavour, ingredients and nutrition behind your daily fibre routine.",
+      "footer": "Psyllium husk. Now tastes great."
     },
     "boom": {
       "eyebrow": "PICK YOUR BOOM",
-      "title": "Good taste. Great routine.",
-      "description": "Three bold flavours. One very simple way to make fibre part of your day."
+      "title": "FIBER. WATER.<br><em>BOOM.</em>",
+      "description": "Three bold flavours. One very simple way to make fibre part of your day.",
+      "footer": "Real fiber. Real taste. Real boom."
     }
-  }
+  },
+  "revision": "2026-09-30-restock-v1"
 }

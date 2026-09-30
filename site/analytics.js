@@ -18,6 +18,7 @@
  if(d.choice||d.taste){name='flavour_selected';details.flavour=d.choice||d.taste}else if(d.count){name='pack_selected';details.count=Number(d.count)}else if(d.flavour||target.id==='availability'){name='checkout_intent';details.flavour=d.flavour||document.querySelector('#flavour')?.value;details.selection=document.querySelector('#selection')?.textContent?.slice(0,100)}else if(d.scene){name='routine_step';details.step=d.scene}
  if(target.tagName==='A'){try{const u=new URL(target.href);details.destination=u.origin===location.origin?u.pathname+u.hash:u.protocol==='mailto:'?'email':u.hostname;}catch{}}
  event(name,details);flush();});
+ document.addEventListener('fb:context',e=>{Object.assign(e.detail,{visitor,session,page,seq:++sequence,path,active:Math.round(active),scroll:maxScroll,campaign:{...campaign}})});
  document.addEventListener('fb:commerce',e=>{if(!e.detail)return;event(e.detail.name,e.detail.details||{});flush()});
  document.addEventListener('change',e=>{if(e.target.id==='flavour')event('flavour_selected',{flavour:e.target.value})});
 })();

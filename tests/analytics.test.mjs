@@ -20,3 +20,23 @@ test('daily retention cleanup deletes old events',async()=>{const e=env();await 
 test('admin templates contain syntactically valid scripts without embedded PIN',()=>{for(const auth of [true,false]){const html=adminPage(auth,true,'nonce');const script=html.match(/<script nonce="nonce">([\s\S]*?)<\/script>/)[1];new Function(script);assert.ok(!html.includes('1201'));assert.ok(!html.includes('test-only-pin'))}});
 
 test('UTM filters combine, preserve legacy engagement and support missing values safely',async()=>{const e=env();const campaign={utm_source:'Newsletter',utm_medium:'email',utm_campaign:'Launch & summer',utm_content:'hero',utm_term:'psyllium'};const first=event({details:campaign});const click=event({visitor:first.visitor,session:first.session,page:first.page,name:'checkout_intent',seq:2,active:90,scroll:80});const other=event({details:{utm_source:'instagram',utm_medium:'paid',utm_campaign:'Other'}});const direct=event();await worker.fetch(req('/api/events',{events:[first,click,other,direct]}),e);const cookie=await login(e);const get=async q=>{const response=await worker.fetch(req('/api/admin/report?'+q,null,cookie),e);assert.equal(response.status,200);return response.json()};let d=await get(new URLSearchParams(campaign));assert.equal(d.totals.views,1);assert.equal(d.totals.events,2);assert.equal(d.pages[0].active,90);assert.equal(d.events.find(x=>x.name==='checkout_intent').count,1);assert.equal(d.campaigns[0].utm_campaign,'Launch & summer');assert.ok(d.utm_options.utm_source.includes('instagram'));d=await get('utm_source=Newsletter&utm_medium=paid');assert.equal(d.totals.views,0);d=await get('utm_source_missing=1');assert.equal(d.totals.views,1);d=await get('utm_term_missing=1');assert.equal(d.totals.views,2);d=await get(new URLSearchParams({utm_source:"x' OR 1=1 --"}));assert.equal(d.totals.views,0);d=await get('utm_source=newsletter');assert.equal(d.totals.views,0)});
+
+test('checkout interest stays one immutable offer with optional protected email and matching campaign filters',async()=>{
+ const e=env(),id=crypto.randomUUID(),token=crypto.randomUUID();const body={id,token,version:'boom',language:'en',flavor:'pistachio',bars:14,market:'PL',price:9900,currency:'PLN',revision:'2026-09-30-restock-v1',context:{visitor:crypto.randomUUID(),session:crypto.randomUUID(),page:crypto.randomUUID(),seq:2,campaign:{utm_source:'qa',utm_campaign:'offer-a'}}};
+ await worker.fetch(req('/api/events',{events:[event({visitor:body.context.visitor,session:body.context.session,page:body.context.page,path:'/boom/en/product/',details:body.context.campaign})]}),e);
+ const save=b=>worker.fetch(req('/api/checkout-intent',b),e);
+ assert.equal((await save(body)).status,200);assert.equal((await save(body)).status,200);
+ assert.equal(e.DB.db.prepare('SELECT count(*) n FROM checkout_intents').get().n,1);
+ assert.equal(e.DB.db.prepare("SELECT count(*) n FROM events WHERE name='checkout_intent'").get().n,1);
+ assert.equal(e.DB.db.prepare('SELECT email FROM checkout_intents').get().email,'');
+ assert.equal((await save({...body,token:crypto.randomUUID(),email:'stolen@example.com',consent:true})).status,409);
+ assert.equal((await save({...body,price:1})).status,409);
+ assert.equal((await save({...body,email:'not-an-email',consent:true})).status,400);
+ assert.equal((await save({...body,email:'tester@example.com',consent:true})).status,200);
+ assert.equal((await save(body)).status,200);assert.equal(e.DB.db.prepare('SELECT email FROM checkout_intents').get().email,'tester@example.com');
+ const cookie=await login(e);const d=await (await worker.fetch(req('/api/admin/report?variant=boom&utm_source=qa',null,cookie),e)).json();assert.equal(d.checkout_intents.length,1);assert.equal(d.checkout_intents[0].price,9900);assert.equal(d.checkout_intents[0].email,'tester@example.com');assert.equal(d.events.find(x=>x.name==='checkout_intent').count,1);
+ const empty=await (await worker.fetch(req('/api/admin/report?utm_source=other',null,cookie),e)).json();assert.equal(empty.checkout_intents.length,0);
+ assert.equal((await worker.fetch(req('/api/admin/report'),e)).status,401);
+ const redirect=await worker.fetch(req('/boom/en/checkout/?flavor=pistachio'),e);assert.equal(redirect.status,302);assert.match(redirect.headers.get('location'),/boom\/en\/product\/\?flavor=pistachio/);
+ e.DB.db.exec('UPDATE checkout_intents SET time=1');await worker.scheduled({},e);assert.equal(e.DB.db.prepare('SELECT count(*) n FROM checkout_intents').get().n,0);
+});

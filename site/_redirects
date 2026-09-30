@@ -6,3 +6,11 @@
 /checkout /checkout/en/ 302
 
 /product /light/en/product/ 302
+/checkout/en /light/en/product/ 302
+/checkout/en/ /light/en/product/ 302
+/light/en/checkout /light/en/product/ 302
+/light/en/checkout/ /light/en/product/ 302
+/psyllium/en/checkout /psyllium/en/product/ 302
+/psyllium/en/checkout/ /psyllium/en/product/ 302
+/boom/en/checkout /boom/en/product/ 302
+/boom/en/checkout/ /boom/en/product/ 302
