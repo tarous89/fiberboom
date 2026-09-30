@@ -97,7 +97,8 @@
         "Google Pay",
         "SEPA Direct Debit",
         "Bank transfer"
-      ]
+      ],
+      "preferredLanguage": "de"
     },
     "PL": {
       "name": "Poland",
@@ -130,7 +131,8 @@
         "Apple Pay",
         "Google Pay",
         "Bank transfer"
-      ]
+      ],
+      "preferredLanguage": "pl"
     }
   },
   "versions": {
@@ -153,5 +155,12 @@
       "footer": "Real fiber. Real taste. Real boom."
     }
   },
-  "revision": "2026-09-30-restock-v1"
+  "revision": "2026-09-30-restock-v1",
+  "localization": {
+    "defaultMarket": "DE",
+    "defaultLanguage": "en",
+    "publishedLanguages": [
+      "en"
+    ]
+  }
 }

@@ -1,11 +1,12 @@
 import {cp,rm,access,readdir,readFile,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
+import {applyShared} from './shared.mjs';
 import {buildCommerce} from './commerce.mjs';
 await access('site/index.html');
 await rm('dist',{recursive:true,force:true});
 await cp('site','dist',{recursive:true});
 for(const path of ['dist/index.html',...['light','psyllium','boom'].map(v=>`dist/${v}/en/index.html`)]){
- const html=await readFile(path,'utf8');await writeFile(path,html.replace('</body>','<script defer src="/commerce/landing.js"></script></body>'));
+ const html=await readFile(path,'utf8');await writeFile(path,html.replace('</body>','<script type="module" src="/commerce/landing.js"></script></body>'));
 }
 await buildCommerce();
 
@@ -19,7 +20,7 @@ async function addNotice(directory){
   const path=join(directory,entry.name);
   if(entry.isDirectory())await addNotice(path);
   else if(entry.name.endsWith('.html')){
-   let html=await readFile(path,'utf8');
+   let html=applyShared(await readFile(path,'utf8'));
    html=html.replace('</head>','<link rel="stylesheet" href="/beta-notice.css"></head>');
    html=html.replace('</body>',notice+'<script defer src="/beta-notice.js"></script><script defer src="/analytics.js"></script></body>');
    await writeFile(path,html);

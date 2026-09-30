@@ -1,0 +1,13 @@
+// Country is shared across the storefront. Only published translations may be selected.
+export const catalog=await fetch('/commerce/catalog.json').then(r=>{if(!r.ok)throw Error('Could not load country options');return r.json()});
+const params=new URLSearchParams(location.search);let saved='';try{saved=localStorage.getItem('fb_market')||''}catch{}
+export let country=[params.get('market'),saved,catalog.localization.defaultMarket].find(k=>Object.hasOwn(catalog.markets,k));
+export const languageFor=key=>catalog.localization.publishedLanguages.includes(catalog.markets[key].preferredLanguage)?catalog.markets[key].preferredLanguage:catalog.localization.defaultLanguage;
+const select=document.getElementById('market');
+function homePrices(){if(document.body.dataset.commercePage)return;const m=catalog.markets[country];const money=v=>new Intl.NumberFormat('en',{style:'currency',currency:m.currency}).format(v/100);document.querySelectorAll('[data-count]').forEach(el=>{const n=Number(el.dataset.count);if(!m.prices[n])return;if(el.querySelector('strong'))el.querySelector('strong').textContent=money(m.prices[n]);if(el.querySelector('span'))el.querySelector('span').textContent=money(m.prices[n]/n)+' / bar'});document.querySelectorAll('.taste-price,.reveal-shop-row>p').forEach(el=>{el.textContent='From '+money(m.prices[30]/30)+' / bar'});}
+function sync(){try{localStorage.setItem('fb_market',country)}catch{}if(select)select.value=country;homePrices();document.documentElement.dataset.market=country;}
+export function setCountry(value){if(!Object.hasOwn(catalog.markets,value))return;country=value;sync();const url=new URL(location.href);url.searchParams.set('market',country);history.replaceState(null,'',url);const language=languageFor(country),match=location.pathname.match(/^\/(light|psyllium|boom)\/([a-z]{2})(\/.*)$/);if(match&&match[2]!==language){url.pathname='/'+match[1]+'/'+language+match[3];location.assign(url);return;}if(location.pathname==='/'&&language!=='en'){url.pathname='/light/'+language+'/';location.assign(url);return;}document.dispatchEvent(new CustomEvent('fb:market',{detail:{market:country,language}}));}
+if(select)select.addEventListener('change',()=>setCountry(select.value));
+sync();
+// Keep country context when moving among storefront and legal pages.
+document.addEventListener('click',event=>{const a=event.target.closest?.('a[href]');if(!a||a.getAttribute('href').startsWith('#'))return;const url=new URL(a.href,location.href);if(url.origin!==location.origin||url.pathname.startsWith('/admin'))return;url.searchParams.set('market',country);a.href=url.pathname+url.search+url.hash;});
