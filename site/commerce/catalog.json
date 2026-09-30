@@ -98,7 +98,11 @@
         "SEPA Direct Debit",
         "Bank transfer"
       ],
-      "preferredLanguage": "de"
+      "preferredLanguage": "de",
+      "shipping": {
+        "fee": 350,
+        "freeFrom": 3000
+      }
     },
     "PL": {
       "name": "Poland",
@@ -132,30 +136,34 @@
         "Google Pay",
         "Bank transfer"
       ],
-      "preferredLanguage": "pl"
+      "preferredLanguage": "pl",
+      "shipping": {
+        "fee": 1500,
+        "freeFrom": 10000
+      }
     }
   },
   "versions": {
     "light": {
       "eyebrow": "YOUR DAILY MOMENT",
       "title": "Feel light.<br><em>Every day.</em>",
-      "description": "Pick your flavour. Find your rhythm. Make fibre the easy part of your day.",
+      "description": "Psyllium fibre. Seriously good taste. Pick your flavour and feel light.",
       "footer": "Feel light. Every day."
     },
     "psyllium": {
       "eyebrow": "FIBRE, MADE SIMPLE",
       "title": "Psyllium husk.<br>Now tastes <em>great.</em>",
-      "description": "Explore the flavour, ingredients and nutrition behind your daily fibre routine.",
+      "description": "Psyllium husk in a seriously good-tasting bar. Explore the flavours and find your favourite.",
       "footer": "Psyllium husk. Now tastes great."
     },
     "boom": {
       "eyebrow": "PICK YOUR BOOM",
       "title": "FIBER. WATER.<br><em>BOOM.</em>",
-      "description": "Three bold flavours. One very simple way to make fibre part of your day.",
+      "description": "Real fibre. Real taste. Real boom. Pick your flavour and pack size.",
       "footer": "Real fiber. Real taste. Real boom."
     }
   },
-  "revision": "2026-09-30-restock-v1",
+  "revision": "2026-09-30-restock-v2",
   "localization": {
     "defaultMarket": "DE",
     "defaultLanguage": "en",
