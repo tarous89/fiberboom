@@ -62,3 +62,18 @@ test('German journeys and offers retain language and filter independently from E
  const en=await (await worker.fetch(req('/api/admin/report?language=en',null,cookie),e)).json();assert.equal(en.checkout_intents.length,0);assert.equal(en.totals.views,1);
  const redirect=await worker.fetch(req('/boom/de/checkout/?flavor=date'),e);assert.match(redirect.headers.get('location'),/boom\/de\/product\/\?flavor=date/);
 });
+
+test('edge location and device persist, combine with filters, and follow offers without trusting client location',async()=>{
+ const e=env();const send=(path,body,cf,ua)=>{const r=req(path,body);r.headers.set('User-Agent',ua);Object.defineProperty(r,'cf',{value:cf});return worker.fetch(r,e)};
+ const ua='Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) Mobile Safari';
+ const ev=event({path:'/light/de/',details:{country:'US',city:'Fake',device:'desktop',utm_source:'test'}});
+ assert.equal((await send('/api/events',{events:[ev]},{country:'DE',region:'Berlin',city:'Berlin',latitude:'52.5'},ua)).status,200);
+ const details=JSON.parse(e.DB.db.prepare('SELECT details FROM events WHERE id=?').get(ev.id).details);assert.equal(details.country,'DE');assert.equal(details.device,'mobile');assert.equal(details.city,'Berlin');assert.equal(details.latitude,undefined);assert.equal(details.tabletHint,undefined);
+ const offer={id:crypto.randomUUID(),token:crypto.randomUUID(),version:'light',language:'de',flavor:'date',bars:14,market:'PL',price:9900,currency:'PLN',revision:'2026-09-30-restock-v2',context:{visitor:ev.visitor,session:ev.session,page:ev.page,campaign:{utm_source:'test'}}};
+ assert.equal((await send('/api/checkout-intent',offer,{country:'DE',region:'Berlin',city:'Berlin'},ua)).status,200);
+ await worker.fetch(req('/api/events',{events:[event()]}),e);
+ const cookie=await login(e),get=async q=>(await worker.fetch(req('/api/admin/report?'+q,null,cookie),e)).json();
+ const d=await get('country=DE&device=mobile&language=de&utm_source=test');assert.equal(d.totals.views,1);assert.equal(d.locations[0].city,'Berlin');assert.equal(d.devices[0].device,'mobile');assert.equal(d.checkout_intents[0].market,'PL');assert.equal(JSON.parse(d.checkout_intents[0].audience_details).country,'DE');assert.equal(d.visitors[0].countries,'DE');
+ assert.equal((await get('country=PL')).totals.views,0);assert.equal((await get('device=desktop')).checkout_intents.length,0);assert.equal((await get('country=unknown&device=unknown')).totals.views,1);
+ const journey=await (await worker.fetch(req('/api/admin/journey?visitor='+ev.visitor,null,cookie),e)).json();assert.equal(JSON.parse(journey.events[0].details).device,'mobile');
+});
