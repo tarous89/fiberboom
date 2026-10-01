@@ -4,7 +4,7 @@ Published routes: `/{light,psyllium,boom}/pl/` and `/{light,psyllium,boom}/pl/pr
 
 ## Voice and intent
 
-- Light: reassuring, everyday language. “Poczuj lekkość. Każdego dnia.” Avoid academic wording in the emotional sections.
+- Light: reassuring, everyday language. “Poczuj ulgę. I lekkość. Każdego dnia.” Avoid academic wording in the emotional sections.
 - Psyllium: clear explanations, faithful doses, study populations and limitations. “Łuska babki jajowatej. Teraz naprawdę smakuje.” Psyllium husk is **łuska babki jajowatej**, not babka płesznik.
 - Boom: conversational bathroom humour, short lines and playful reversals. “BŁONNIK. WODA. BOOM.” The restock message starts “No i klops. Wszystko poszło.”
 - Conversion actions: “Kup FiberBoom”, “Poznaj smaki”, “Zamów teraz”, “Odbierz 30% rabatu”. No claim of guaranteed conversion improvement.
