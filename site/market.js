@@ -11,5 +11,3 @@ if(select)select.addEventListener('change',()=>setCountry(select.value));
 sync();
 // Keep country context when moving among storefront and legal pages.
 document.addEventListener('click',event=>{const a=event.target.closest?.('a[href]');if(!a||a.getAttribute('href').startsWith('#'))return;const url=new URL(a.href,location.href);if(url.origin!==location.origin||url.pathname.startsWith('/admin'))return;url.searchParams.set('market',country);a.href=url.pathname+url.search+url.hash;});
-
-const languageSelect=document.getElementById('language');if(languageSelect){languageSelect.value=document.documentElement.lang;languageSelect.addEventListener('change',()=>{const url=new URL(location.href);const match=url.pathname.match(/^\/(light|psyllium|boom)\/(en|pl|de)(\/.*)$/);url.pathname=match?'/'+match[1]+'/'+languageSelect.value+match[3]:'/light/'+languageSelect.value+'/';url.searchParams.set('market',country);location.assign(url);});}
