@@ -45,5 +45,7 @@ export async function buildPriceVariants(){
  const redirects=await readFile('dist/_redirects','utf8');
  const extra=concepts.map(v=>`/${v}x /${v}x/en/ 302`);
  for(const version of [...concepts,...concepts.map(v=>v+'x')])for(const language of languages)for(const suffix of ['','/'])extra.push(`/${version}/${language}/checkout${suffix} /${version}/${language}/product/ 302`);
- await writeFile('dist/_redirects',redirects.replace('/product /light/en/product/','/product /lightx/en/product/').replace(/^(\/checkout(?:\/en\/?|) )\/light\/en\/product\//gm,'$1/lightx/en/product/')+'\n'+extra.join('\n')+'\n');
+ const lines=(redirects.replace('/product /light/en/product/','/product /lightx/en/product/').replace(/^(\/checkout(?:\/en\/?|) )\/light\/en\/product\//gm,'$1/lightx/en/product/')+'\n'+extra.join('\n')).split('\n').filter(line=>line.trim());
+ // Cloudflare requires a unique source path for every redirect rule.
+ await writeFile('dist/_redirects',[...new Map(lines.map(line=>[line.split(/\s+/)[0],line])).values()].join('\n')+'\n');
 }
