@@ -392,8 +392,6 @@
   "© 2026 Fiberboom. All rights reserved.": "© 2026 Fiberboom. Alle Rechte vorbehalten.",
   "Privacy Policy": "Datenschutzerklärung (EN)",
   "Your privacy": "Deine Privatsphäre",
-  "Dismiss": "Schließen",
-  "Dismiss privacy notice": "Datenschutzhinweis schließen",
   "We use cookies and similar technologies to understand how our website is used and improve your experience. Read our": "Wir verwenden Cookies und ähnliche Technologien, um zu verstehen, wie unsere Website genutzt wird, und dein Nutzungserlebnis zu verbessern. In unserer",
   "for information about how we handle your data and your rights.": "erfährst du, wie wir mit deinen Daten umgehen und welche Rechte du hast.",
   "FiberBoom home": "FiberBoom Startseite",
@@ -496,5 +494,7 @@
   "Austria": "Österreich",
   "Switzerland": "Schweiz",
   "International shipping": "Internationaler Versand",
-  "Decline": "Ablehnen"
+  "Decline": "Ablehnen",
+  "Approve": "Zustimmen",
+  "Approve privacy notice": "Datenschutzhinweis bestätigen"
 }

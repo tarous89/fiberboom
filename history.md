@@ -21,3 +21,8 @@
 - Approved shipping: Austria EUR 3.50/free from EUR 30; International USD 4/free from USD 34; Switzerland CHF 3.50/free from CHF 30. Both price levels share the rules; threshold is product subtotal after discounts. Catalog revision v5 rejects stale offers; previous captured amounts remain immutable.
 - Removed beta-testing wording from the public privacy policy. Added localized Decline alongside Dismiss; the banner uses site-improvement wording. The policy explains that both choices close the informational notice and do not withdraw previously provided consent. No consent is inferred or stored by these buttons.
 - Banner Decline, Dismiss and privacy-policy clicks emit separate privacy_notice_declined, privacy_notice_dismissed and privacy_notice_policy_click events through the existing collector. Event validation accepts these names; database, admin reports and funnel workflow remain unchanged. Prior invitation consent remains the basis for this private testing; no public consent launch implied.
+
+## 2026-10-04 — Banner labels and provider wording
+
+- Banner now shows Approve and Decline, localized as Zustimmen/Ablehnen and Akceptuję/Odrzuć. Approval emits privacy_notice_approved; legacy privacy_notice_dismissed remains accepted for already-open pages and historical records. Other analytics behavior is unchanged.
+- Public site no longer names the company email provider; the policy still discloses email service providers.

@@ -12,9 +12,9 @@ test('UTMs persist across pages and events, reset on new tagged links and expire
 
 test('privacy notice choices and policy link are tracked once without interrupting engagement',async()=>{
  const b=browser();await b.tick(1);
- for(const [id,tagName,label] of [['fb-beta-notice-decline','BUTTON','Decline'],['fb-beta-notice-dismiss','BUTTON','Dismiss'],['','A','Privacy Policy']]){
+ for(const [id,tagName,label] of [['fb-beta-notice-decline','BUTTON','Decline'],['fb-beta-notice-approve','BUTTON','Approve'],['','A','Privacy Policy']]){
   const target={id,tagName,textContent:label,closest:selector=>selector==='#fb-beta-notice'?{}:target};b.handlers.click({target});await b.tick(1);
  }
- assert.deepEqual(b.events().filter(e=>e.name.startsWith('privacy_notice_')).map(e=>e.name),['privacy_notice_declined','privacy_notice_dismissed','privacy_notice_policy_click']);
+ assert.deepEqual(b.events().filter(e=>e.name.startsWith('privacy_notice_')).map(e=>e.name),['privacy_notice_declined','privacy_notice_approved','privacy_notice_policy_click']);
  await b.tick(30);assert.ok(b.events().some(e=>e.name==='active_time'&&e.active>=15));assert.ok(b.events().filter(e=>e.name.startsWith('privacy_notice_')).every(e=>e.details.utm_source==='invite'&&e.path==='/'));
 });

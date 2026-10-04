@@ -131,7 +131,7 @@ test('approved new markets preserve prices, currencies and shipping in records a
 });
 
 test('privacy notice interactions persist and appear in existing event reports',async()=>{
- const e=env(),first=event(),names=['privacy_notice_declined','privacy_notice_dismissed','privacy_notice_policy_click'];
+ const e=env(),first=event(),names=['privacy_notice_declined','privacy_notice_approved','privacy_notice_policy_click'];
  const events=names.map((name,i)=>event({visitor:first.visitor,session:first.session,page:first.page,name,seq:i+2,details:{label:name}}));
  assert.equal((await worker.fetch(req('/api/events',{events:[first,...events]}),e)).status,200);
  const cookie=await login(e),data=await (await worker.fetch(req('/api/admin/report',null,cookie),e)).json();assert.equal(data.totals.events,4);assert.equal(data.totals.views,1);for(const name of names)assert.equal(data.events.find(row=>row.name===name).count,1);
