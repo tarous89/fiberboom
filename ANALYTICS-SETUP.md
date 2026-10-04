@@ -31,3 +31,11 @@ The Worker implements first-party event collection and a server-protected `/admi
 `npm run build`
 
 `node --test tests/*.test.mjs` (Node 22.13+ for the local SQLite test adapter).
+
+## Conversion funnels (October 4)
+
+`/admin` now shows three filtered tables: landing-page funnels, product-page funnels (including direct arrivals), and product variations by flavor/pack/market/currency/price shown. All support existing period, variant, language, campaign, visitor-country and device filters and are included in JSON export. Counts are unique browsers per row; repeat clicks do not inflate counts. Stages match within the same session, variant and language, in time order. Variation rows additionally match the selected offer and product-page instance. A browser exploring several offers can appear in several variation rows, so rows should not be summed as unique people.
+
+Landing product-click rate uses landing viewers; landing order rate uses product visitors; email rate uses order clickers; overall rate uses viewers. Product and variation order rates use their respective viewers. Empty denominators display a dash. Saved emails come from successful `checkout_intents` writes, not client form-submit events. New order clicks are counted even if an API write fails; older successful orders can be recovered from `checkout_intent` events. Historical product clicks are recoverable only where a product-link click was recorded; full selected-offer view tracking begins with this release.
+
+New homepage events carry `lightx`; existing root events retain their stored `light` variant. Collector and Worker allowlists support all 36 routes. New composite indexes support journey correlation; there is no destructive migration.

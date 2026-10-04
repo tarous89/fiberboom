@@ -13,7 +13,7 @@ Published routes: `/{light,psyllium,boom}/pl/` and `/{light,psyllium,boom}/pl/pr
 
 `site/i18n/pl.json` contains manually authored translations. `scripts/polish.mjs` builds six static HTML pages from the English templates after shared header/footer injection, localizes the legacy interactive scripts, and creates a localized product catalog and script. Images use the same optimized assets. The packaging artwork remains unchanged. Keep translated data-flavour/data-choice/data-taste values aligned with the generated legacy script keys. Do not translate immutable API flavor IDs.
 
-A direct Polish URL defaults to Poland even if an earlier visit saved Germany. An explicit `?market=DE` overrides this. Country selection picks the available preferred language; the separate language control allows English + Poland or Polish + Germany. Product selections and UTM tags survive language changes.
+A direct Polish URL defaults to Poland even if an earlier visit saved Germany. An explicit `?market=DE` overrides this. Country selection picks the available preferred language; one country selector controls language, market and currency together. Product selections and UTM tags survive language changes.
 
 Prices, delivery thresholds and payment options come from the existing market catalog. Language is not inferred from market in analytics: Polish routes and checkout offers persist `pl`. Admin reports provide a language filter and a language column for offers. The signed signup token and immutable offer protection also cover language.
 

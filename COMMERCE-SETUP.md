@@ -1,6 +1,6 @@
 # Product and restock flow
 
-English product routes: `/{light|psyllium|boom}/en/product/`. Root remains the Light landing page. Old checkout links redirect to their variant's product page. No checkout or payment page is used.
+English product routes: `/{light|psyllium|boom}/en/product/`. Root serves the English Light X landing page. Old checkout links redirect to their variant's product page. No checkout or payment page is used.
 
 Edit `site/commerce/catalog.json` for flavor content, imagery, packs, market pricing and version copy. Increment `revision` whenever offer pricing changes. The server validates the displayed amount, currency and revision against the same catalog before accepting an interest record; it never silently records a different price. Nutrition and ingredients remain illustrative.
 
@@ -22,10 +22,16 @@ Keep STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET in Worker runtime secrets, neve
 
 `scripts/shared.mjs` applies the same footer, favicon and header country selector to generated public pages. `/market.js` owns the country preference (`fb_market` in local storage). An explicit `?market=DE|PL` wins over the saved choice; otherwise the default is Germany. Country changes update homepage prices, product prices, payment marks and delivery text. Product links carry the country alongside pack, flavor and campaign parameters.
 
-Languages remain English for now. `localization.publishedLanguages` is the allowlist, with each market's `preferredLanguage` defining its future default. Add translated routes and content first, then publish the language in that allowlist. Country selection can then route to the available language for the same variant/page. Do not mark a language published before its routes exist. Use language-specific catalogs/content when translations are introduced.
+English, Polish and German are published in `localization.publishedLanguages`. Country selection routes to the market's preferred language for the same concept, price level and page, preserving product choices and campaign tags. There is one country selector; language and currency follow the country.
 
 ## September 30 offer update
 
 Shipping: Germany EUR 3.50, free from EUR 30; Poland PLN 15, free from PLN 100. Thresholds use product value after discounts, excluding delivery. The current restock-interest offer has no discount applied; the 30% offer is for a later first order. `checkout_intent` stores shipping and total at capture time, and the admin table/report exposes them. Older records show no shipping/total rather than recalculating historical offers using new rates. The catalog revision changed to protect against stale displayed offers.
 
 Customer-information structure was informed by ESN Germany (service.esn.com shipping, payment and returns help) and SFD Poland (sklep.sfd.pl/Dostawa.aspx and faq/Default.aspx), using original Fiberboom wording. Competitors' delivery estimates were not adopted as Fiberboom promises. Confirm fulfillment timelines before enabling actual orders. Product ingredient and nutrition notes remain inside their expanded details while the values are unverified.
+
+## October 4 price variants
+
+The six version IDs are `light`, `boom`, `psyllium`, `lightx`, `boomx`, `psylliumx`; no hyphens. All have EN/DE/PL landing and product pages. Root serves English Light X. Each market's `prices` holds standard prices and `xPrices` holds X prices; package amounts and shipping are validated by the Worker against the route's version. The revision changed to `2026-10-04-price-levels-v3`, so stale displayed offers are rejected. Existing recorded offers keep their original amounts.
+
+Client events record product clicks, each viewed flavor/pack/market combination and order-button clicks. A successful restock email update writes an idempotent `email_saved` event without including the email in event details. The original intent remains the authoritative signup record. This release continues to use the restock dialog and does not enable payments or send emails.

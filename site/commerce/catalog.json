@@ -85,7 +85,7 @@
         {
           "id": "de-home",
           "name": "Home delivery",
-          "description": "DHL parcel delivery \u2014 planned service",
+          "description": "DHL parcel delivery — planned service",
           "fee": null
         }
       ],
@@ -102,6 +102,11 @@
       "shipping": {
         "fee": 350,
         "freeFrom": 3000
+      },
+      "xPrices": {
+        "7": 1550,
+        "14": 2890,
+        "30": 5490
       }
     },
     "PL": {
@@ -116,13 +121,13 @@
         {
           "id": "pl-locker",
           "name": "Parcel locker",
-          "description": "InPost Paczkomat \u2014 planned service",
+          "description": "InPost Paczkomat — planned service",
           "fee": null
         },
         {
           "id": "pl-home",
           "name": "Home delivery",
-          "description": "InPost / DPD courier \u2014 planned service",
+          "description": "InPost / DPD courier — planned service",
           "fee": null
         }
       ],
@@ -140,6 +145,11 @@
       "shipping": {
         "fee": 1500,
         "freeFrom": 10000
+      },
+      "xPrices": {
+        "7": 6900,
+        "14": 12500,
+        "30": 24900
       }
     }
   },
@@ -161,9 +171,27 @@
       "title": "FIBER. WATER.<br><em>BOOM.</em>",
       "description": "Real fibre. Real taste. Real boom. Pick your flavour and pack size.",
       "footer": "Real fiber. Real taste. Real boom."
+    },
+    "lightx": {
+      "eyebrow": "YOUR DAILY MOMENT",
+      "title": "Feel light.<br><em>Every day.</em>",
+      "description": "Psyllium fibre. Seriously good taste. Pick your flavour and feel light.",
+      "footer": "Feel light. Every day."
+    },
+    "psylliumx": {
+      "eyebrow": "FIBRE, MADE SIMPLE",
+      "title": "Psyllium husk.<br>Now tastes <em>great.</em>",
+      "description": "Psyllium husk in a seriously good-tasting bar. Explore the flavours and find your favourite.",
+      "footer": "Psyllium husk. Now tastes great."
+    },
+    "boomx": {
+      "eyebrow": "PICK YOUR BOOM",
+      "title": "FIBER. WATER.<br><em>BOOM.</em>",
+      "description": "Real fibre. Real taste. Real boom. Pick your flavour and pack size.",
+      "footer": "Real fiber. Real taste. Real boom."
     }
   },
-  "revision": "2026-09-30-restock-v2",
+  "revision": "2026-10-04-price-levels-v3",
   "localization": {
     "defaultMarket": "DE",
     "defaultLanguage": "en",

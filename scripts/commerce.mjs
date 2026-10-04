@@ -1,7 +1,7 @@
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 export async function buildCommerce(){
 const c=JSON.parse(await readFile('site/commerce/catalog.json','utf8'));
-for(const [version,copy] of Object.entries(c.versions)){
+for(const [version,copy] of Object.entries(c.versions).filter(([version])=>!version.endsWith('x'))){
 const root=`/${version}/en`;const flavour=c.flavors.chocolate;
 const header=`<a class="skip" href="#main">Skip to content</a><header class="product-header"><a href="${root}/" aria-label="FiberBoom home"><img class="logo" src="/assets/logo-3e78513a6041.webp" alt="FiberBoom" width="123" height="92"></a></header>`;
 const footer=`<footer class="site-footer"><div class="footer-brand"><img src="/assets/footer-logo-v5-be2bf9b2381a.webp" alt="FiberBoom" width="150" height="112" loading="lazy"><p>${copy.footer}</p><small>© 2026 Fiberboom</small></div><div class="footer-info"><div class="footer-links"><a href="/privacy/en/">Privacy policy</a><a href="/terms/en/">Terms &amp; conditions</a><a href="mailto:contact@fiberboom.com">Contact</a></div><p>Fiberboom<br>Svanevej 22, 2400 København, Denmark</p><a href="mailto:contact@fiberboom.com">contact@fiberboom.com</a></div></footer>`;
