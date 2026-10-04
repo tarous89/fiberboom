@@ -113,7 +113,7 @@ test('funnels deduplicate browsers, preserve root history and correlate exact va
  const b=(await get('variant=boomx')).funnels.landings.find(r=>r.path==='/boomx/de/');assert.deepEqual([b.viewers,b.product_viewers,b.order_clickers,b.email_signups],[1,0,0,0]);
 });
 
-test('approved new markets preserve prices, currencies and unknown shipping in records and report filters',async()=>{
+test('approved new markets preserve prices, currencies and shipping in records and report filters',async()=>{
  for(const market of ['AT','CH','INT']){
   const e=env(),m=catalog.markets[market],version='lightx',lang=m.preferredLanguage,visitor=crypto.randomUUID(),session=crypto.randomUUID(),page=crypto.randomUUID();
   const details={market,currency:m.currency,price:m.xPrices[14],count:14,flavor_id:'date'};
@@ -123,9 +123,16 @@ test('approved new markets preserve prices, currencies and unknown shipping in r
   assert.equal((await worker.fetch(req('/api/checkout-intent',body),e)).status,200);
   assert.equal((await worker.fetch(req('/api/checkout-intent',{...body,email:'local-market-test@example.com',consent:true}),e)).status,200);
   const cookie=await login(e);const data=await (await worker.fetch(req('/api/admin/report?market='+market,null,cookie),e)).json();
-  assert.equal(data.checkout_intents[0].shipping,null);assert.equal(data.checkout_intents[0].total,null);assert.equal(data.checkout_intents[0].shipping_status,'pending');assert.equal(data.checkout_intents[0].currency,m.currency);
+  const shipping=m.xPrices[14]>=m.shipping.freeFrom?0:m.shipping.fee;assert.equal(data.checkout_intents[0].shipping,shipping);assert.equal(data.checkout_intents[0].total,m.xPrices[14]+shipping);assert.equal(data.checkout_intents[0].shipping_status,'known');assert.equal(data.checkout_intents[0].currency,m.currency);
   assert.equal(data.funnels.offers[0].market,market);assert.equal(data.funnels.offers[0].viewers,1);assert.equal(data.funnels.offers[0].email_signups,1);
   const other=await (await worker.fetch(req('/api/admin/report?market=PL',null,cookie),e)).json();assert.equal(other.checkout_intents.length,0);assert.equal(other.totals.views,0);
  }
  for(const level of ['prices','xPrices'])for(const pack of catalog.packs)assert.ok(catalog.markets.INT[level][pack]>=catalog.markets.DE[level][pack]*1.25);
+});
+
+test('privacy notice interactions persist and appear in existing event reports',async()=>{
+ const e=env(),first=event(),names=['privacy_notice_declined','privacy_notice_dismissed','privacy_notice_policy_click'];
+ const events=names.map((name,i)=>event({visitor:first.visitor,session:first.session,page:first.page,name,seq:i+2,details:{label:name}}));
+ assert.equal((await worker.fetch(req('/api/events',{events:[first,...events]}),e)).status,200);
+ const cookie=await login(e),data=await (await worker.fetch(req('/api/admin/report',null,cookie),e)).json();assert.equal(data.totals.events,4);assert.equal(data.totals.views,1);for(const name of names)assert.equal(data.events.find(row=>row.name===name).count,1);
 });

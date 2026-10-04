@@ -174,8 +174,8 @@
         {
           "id": "at-home",
           "name": "Home delivery",
-          "description": "Shipping calculated by destination",
-          "fee": null
+          "description": "Home delivery across Austria.",
+          "fee": 350
         }
       ],
       "payments": [
@@ -189,9 +189,8 @@
       ],
       "preferredLanguage": "de",
       "shipping": {
-        "fee": null,
-        "freeFrom": null,
-        "status": "pending"
+        "fee": 350,
+        "freeFrom": 3000
       },
       "xPrices": {
         "7": 1550,
@@ -199,9 +198,9 @@
         "30": 5490
       },
       "deliveryText": {
-        "en": "Home delivery across Austria. Shipping is calculated by destination.",
-        "de": "Lieferung nach Österreich. Die Versandkosten werden je nach Lieferadresse berechnet.",
-        "pl": "Dostawa do Austrii. Koszt dostawy zależy od adresu."
+        "en": "Home delivery across Austria.",
+        "de": "Lieferung nach Österreich.",
+        "pl": "Dostawa do Austrii."
       }
     },
     "CH": {
@@ -216,8 +215,8 @@
         {
           "id": "ch-home",
           "name": "Home delivery",
-          "description": "Shipping calculated by destination",
-          "fee": null
+          "description": "Delivery to Switzerland.",
+          "fee": 350
         }
       ],
       "payments": [
@@ -231,9 +230,8 @@
       ],
       "preferredLanguage": "de",
       "shipping": {
-        "fee": null,
-        "freeFrom": null,
-        "status": "pending"
+        "fee": 350,
+        "freeFrom": 3000
       },
       "xPrices": {
         "7": 1550,
@@ -241,9 +239,9 @@
         "30": 5490
       },
       "deliveryText": {
-        "en": "Delivery to Switzerland. Shipping is calculated by destination.",
-        "de": "Lieferung in die Schweiz. Die Versandkosten werden je nach Lieferadresse berechnet.",
-        "pl": "Dostawa do Szwajcarii. Koszt dostawy zależy od adresu."
+        "en": "Delivery to Switzerland.",
+        "de": "Lieferung in die Schweiz.",
+        "pl": "Dostawa do Szwajcarii."
       }
     },
     "INT": {
@@ -258,8 +256,8 @@
         {
           "id": "int-home",
           "name": "Home delivery",
-          "description": "Shipping calculated by destination",
-          "fee": null
+          "description": "International delivery, including Switzerland.",
+          "fee": 400
         }
       ],
       "payments": [
@@ -273,9 +271,8 @@
       ],
       "preferredLanguage": "en",
       "shipping": {
-        "fee": null,
-        "freeFrom": null,
-        "status": "pending"
+        "fee": 400,
+        "freeFrom": 3400
       },
       "xPrices": {
         "7": 1950,
@@ -283,9 +280,9 @@
         "30": 6890
       },
       "deliveryText": {
-        "en": "International delivery, including Switzerland. Shipping is calculated by destination.",
-        "de": "Internationaler Versand, auch in die Schweiz. Die Versandkosten werden je nach Lieferadresse berechnet.",
-        "pl": "Dostawa międzynarodowa, również do Szwajcarii. Koszt dostawy zależy od adresu."
+        "en": "International delivery, including Switzerland.",
+        "de": "Internationaler Versand, auch in die Schweiz.",
+        "pl": "Dostawa międzynarodowa, również do Szwajcarii."
       }
     }
   },
@@ -327,7 +324,7 @@
       "footer": "Real fiber. Real taste. Real boom."
     }
   },
-  "revision": "2026-10-04-international-v4",
+  "revision": "2026-10-04-shipping-v5",
   "localization": {
     "defaultMarket": "INT",
     "defaultLanguage": "en",

@@ -9,3 +9,12 @@ test('tracking starts without banner choice, caps time, excludes background time
 test('returning browser retains visitor but gets new session after idle timeout',async()=>{const storage=new Map(),now=Date.now();const a=browser(storage,now),b=browser(storage,now+31*60000);assert.equal(a.events()[0].visitor,b.events()[0].visitor);assert.notEqual(a.events()[0].session,b.events()[0].session);assert.notEqual(a.events()[0].page,b.events()[0].page)});
 
 test('UTMs persist across pages and events, reset on new tagged links and expire with session',async()=>{const storage=new Map(),now=Date.now();const a=browser(storage,now,'?utm_source=newsletter&utm_medium=email&utm_campaign=Launch%20A&utm_content=hero&utm_term=fiber');await a.tick(15);assert.equal(a.events().find(e=>e.name==='active_time').details.utm_campaign,'Launch A');const b=browser(storage,now+20000,'');assert.equal(b.events()[0].details.utm_source,'newsletter');assert.equal(b.events()[0].details.utm_content,'hero');const c=browser(storage,now+21000,'?utm_source=instagram&utm_medium=paid');assert.equal(c.events()[0].details.utm_source,'instagram');assert.equal(c.events()[0].details.utm_campaign,undefined);await a.tick(15);const d=browser(storage,now+40000,'');assert.equal(d.events()[0].details.utm_source,'instagram');const expired=browser(storage,now+32*60000,'');assert.equal(expired.events()[0].details.utm_source,undefined)});
+
+test('privacy notice choices and policy link are tracked once without interrupting engagement',async()=>{
+ const b=browser();await b.tick(1);
+ for(const [id,tagName,label] of [['fb-beta-notice-decline','BUTTON','Decline'],['fb-beta-notice-dismiss','BUTTON','Dismiss'],['','A','Privacy Policy']]){
+  const target={id,tagName,textContent:label,closest:selector=>selector==='#fb-beta-notice'?{}:target};b.handlers.click({target});await b.tick(1);
+ }
+ assert.deepEqual(b.events().filter(e=>e.name.startsWith('privacy_notice_')).map(e=>e.name),['privacy_notice_declined','privacy_notice_dismissed','privacy_notice_policy_click']);
+ await b.tick(30);assert.ok(b.events().some(e=>e.name==='active_time'&&e.active>=15));assert.ok(b.events().filter(e=>e.name.startsWith('privacy_notice_')).every(e=>e.details.utm_source==='invite'&&e.path==='/'));
+});

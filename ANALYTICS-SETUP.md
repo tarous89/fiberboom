@@ -41,3 +41,5 @@ Landing product-click rate uses landing viewers; landing order rate uses product
 New homepage events carry `lightx`; existing root events retain their stored `light` variant. Collector and Worker allowlists support all 36 routes. New composite indexes support journey correlation; there is no destructive migration.
 
 Storefront country (INT/DE/AT/CH/PL) is a separate dashboard filter from visitor network country. Collectors attach the selected market and currency; product offer rows distinguish Austrian and Swiss visitors sharing German routes. New destination offer records expose shipping_status=pending with null shipping/total until rates are supplied.
+
+Privacy-banner interactions are captured as `privacy_notice_declined`, `privacy_notice_dismissed` and `privacy_notice_policy_click`, with translated button/link labels and the existing page, visitor, session, market and campaign context. They appear in event totals and visitor journeys. Button choices do not alter collection during invited testing; the existing consent basis remains described in the policy.

@@ -28,7 +28,7 @@ Edit content under `site/`. Run `npm run build` to generate `dist/`.
 
 All image URLs are content-addressed under `site/assets`, shared between versions, and served with immutable caching. PNG source assets are optimized WebP. Heroes use responsive image sizes; below-fold images are lazy-loaded. No image hotlinks depend on ChatGPT Sites.
 
-This release includes custom beta analytics and a server-protected `/admin` dashboard. Activate the D1 binding and server secrets using [ANALYTICS-SETUP.md](ANALYTICS-SETUP.md). It does not implement signup, payments or randomized allocation. Beta consent is collected through invitations; the on-site notice is informational. Enable `contact@fiberboom.com` and `privacy@fiberboom.com` in your email provider.
+This release includes custom beta analytics and a server-protected `/admin` dashboard. Activate the D1 binding and server secrets using [ANALYTICS-SETUP.md](ANALYTICS-SETUP.md). It does not implement signup, payments or randomized allocation. Beta consent is collected through invitations; the on-site notice is informational; Dismiss and Decline close it without changing the prior invitation consent or analytics. Enable `contact@fiberboom.com` and `privacy@fiberboom.com` in your email provider.
 
 ## Current storefront (October 4)
 
@@ -38,4 +38,4 @@ Standard EUR packs (7/14/30): 12.50 / 22.90 / 45.90; X: 15.50 / 28.90 / 54.90. S
 
 The analytics dashboard shows landing, product-page and selected-offer conversion funnels alongside time/scroll metrics. See `ANALYTICS-SETUP.md`. Run `npm run build` and `node --test tests/*.test.mjs` before deploying through the production Cloudflare Git build.
 
-Country defaults: English/root → International/USD, German → Germany/EUR, Polish → Poland/PLN. Selector options Austria/EUR and Switzerland/CHF share German routes with their explicit market parameter. USD standard 7/14/30: 15.90/28.90/57.90; X: 19.50/36.50/68.90. CHF amounts match EUR numerical prices. New destination shipping is calculated by destination; rates are pending. The dashboard includes a storefront-country filter.
+Country defaults: English/root → International/USD, German → Germany/EUR, Polish → Poland/PLN. Selector options Austria/EUR and Switzerland/CHF share German routes with their explicit market parameter. USD standard 7/14/30: 15.90/28.90/57.90; X: 19.50/36.50/68.90. CHF amounts match EUR numerical prices. Shipping: AT EUR 3.50/free from 30; CH CHF 3.50/free from 30; INT USD 4/free from 34. The dashboard includes a storefront-country filter.

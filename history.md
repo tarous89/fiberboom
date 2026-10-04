@@ -15,3 +15,9 @@
 - USD standard totals 7/14/30: 15.90 / 28.90 / 57.90; X: 19.50 / 36.50 / 68.90. Each is at least 25% above the EUR number. CHF uses EUR numerical totals in both price levels; these are fixed market prices, not FX conversion.
 - New destinations use shipping calculated by destination until rates are supplied. Record shipping and total as null with pending status; never infer zero delivery. Existing DE/PL fees retained. English shipping copy includes Switzerland; German copy follows AT/CH destination.
 - Storefront market filter added to analytics, separate from network visitor country. Offers/funnels preserve market, currency and displayed price; old records remain immutable.
+
+## 2026-10-04 — Fixed shipping and privacy presentation
+
+- Approved shipping: Austria EUR 3.50/free from EUR 30; International USD 4/free from USD 34; Switzerland CHF 3.50/free from CHF 30. Both price levels share the rules; threshold is product subtotal after discounts. Catalog revision v5 rejects stale offers; previous captured amounts remain immutable.
+- Removed beta-testing wording from the public privacy policy. Added localized Decline alongside Dismiss; the banner uses site-improvement wording. The policy explains that both choices close the informational notice and do not withdraw previously provided consent. No consent is inferred or stored by these buttons.
+- Banner Decline, Dismiss and privacy-policy clicks emit separate privacy_notice_declined, privacy_notice_dismissed and privacy_notice_policy_click events through the existing collector. Event validation accepts these names; database, admin reports and funnel workflow remain unchanged. Prior invitation consent remains the basis for this private testing; no public consent launch implied.
