@@ -112,3 +112,20 @@ test('funnels deduplicate browsers, preserve root history and correlate exact va
  await worker.fetch(req('/api/events',{events:[event({visitor:v,session:s,page,path:'/boomx/de/',name:'page_view',time:now}),event({visitor:v,session:s,path:'/boom/de/product/',name:'page_view',time:now+100}),event({visitor:v,path:'/boomx/de/product/',name:'checkout_started',time:now+200,details:offer})]}),e);
  const b=(await get('variant=boomx')).funnels.landings.find(r=>r.path==='/boomx/de/');assert.deepEqual([b.viewers,b.product_viewers,b.order_clickers,b.email_signups],[1,0,0,0]);
 });
+
+test('approved new markets preserve prices, currencies and unknown shipping in records and report filters',async()=>{
+ for(const market of ['AT','CH','INT']){
+  const e=env(),m=catalog.markets[market],version='lightx',lang=m.preferredLanguage,visitor=crypto.randomUUID(),session=crypto.randomUUID(),page=crypto.randomUUID();
+  const details={market,currency:m.currency,price:m.xPrices[14],count:14,flavor_id:'date'};
+  await worker.fetch(req('/api/events',{events:[event({visitor,session,page,path:`/${version}/${lang}/product/`,details}),event({visitor,session,page,path:`/${version}/${lang}/product/`,name:'product_view',seq:2,details})]}),e);
+  const body={id:crypto.randomUUID(),token:crypto.randomUUID(),version,language:lang,flavor:'date',bars:14,market,price:m.xPrices[14],currency:m.currency,revision:catalog.revision,context:{visitor,session,page}};
+  assert.equal((await worker.fetch(req('/api/checkout-intent',{...body,currency:market==='CH'?'EUR':'CHF'}),e)).status,409);
+  assert.equal((await worker.fetch(req('/api/checkout-intent',body),e)).status,200);
+  assert.equal((await worker.fetch(req('/api/checkout-intent',{...body,email:'local-market-test@example.com',consent:true}),e)).status,200);
+  const cookie=await login(e);const data=await (await worker.fetch(req('/api/admin/report?market='+market,null,cookie),e)).json();
+  assert.equal(data.checkout_intents[0].shipping,null);assert.equal(data.checkout_intents[0].total,null);assert.equal(data.checkout_intents[0].shipping_status,'pending');assert.equal(data.checkout_intents[0].currency,m.currency);
+  assert.equal(data.funnels.offers[0].market,market);assert.equal(data.funnels.offers[0].viewers,1);assert.equal(data.funnels.offers[0].email_signups,1);
+  const other=await (await worker.fetch(req('/api/admin/report?market=PL',null,cookie),e)).json();assert.equal(other.checkout_intents.length,0);assert.equal(other.totals.views,0);
+ }
+ for(const level of ['prices','xPrices'])for(const pack of catalog.packs)assert.ok(catalog.markets.INT[level][pack]>=catalog.markets.DE[level][pack]*1.25);
+});

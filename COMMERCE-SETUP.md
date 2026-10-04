@@ -35,3 +35,7 @@ Customer-information structure was informed by ESN Germany (service.esn.com ship
 The six version IDs are `light`, `boom`, `psyllium`, `lightx`, `boomx`, `psylliumx`; no hyphens. All have EN/DE/PL landing and product pages. Root serves English Light X. Each market's `prices` holds standard prices and `xPrices` holds X prices; package amounts and shipping are validated by the Worker against the route's version. The revision changed to `2026-10-04-price-levels-v3`, so stale displayed offers are rejected. Existing recorded offers keep their original amounts.
 
 Client events record product clicks, each viewed flavor/pack/market combination and order-button clicks. A successful restock email update writes an idempotent `email_saved` event without including the email in event details. The original intent remains the authoritative signup record. This release continues to use the restock dialog and does not enable payments or send emails.
+
+## International markets (October 4)
+
+The shared country selector has INT/en/USD, DE/de/EUR, AT/de/EUR, CH/de/CHF and PL/pl/PLN. English routes default to INT; explicit market query parameters take priority over route defaults. Austria and Switzerland share German pages, using market=AT or market=CH. USD pricing and CHF pricing are fixed in the catalog. Shipping for INT/AT/CH has pending status with null fee/threshold; both displayed shipping and recorded total stay pending. Existing DE/PL delivery fees remain. Catalog revision is `2026-10-04-international-v4`.

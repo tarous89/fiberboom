@@ -9,6 +9,6 @@ test('all 36 routes have correct identities, localized assets and sitemap links;
   if(v.endsWith('x'))assert.ok(html.includes('class="theme-'+v.slice(0,-1)+'"')||!page);
  }
  assert.equal(n,36);assert.equal(read('index.html'),read('lightx/en/index.html'));
- const html=read('lightx/en/index.html');for(const p of ['€15.50','€28.90','€54.90'])assert.ok(html.includes(p));for(const p of ['€12.50','€22.90','€45.90'])assert.ok(!html.includes(p));
+ const html=read('lightx/en/index.html');for(const p of ['$19.50','$36.50','$68.90'])assert.ok(html.includes(p));for(const p of ['€12.50','€22.90','€45.90'])assert.ok(!html.includes(p));
  const redirects=read('_redirects');for(const v of ['light','boom','psyllium','lightx','boomx','psylliumx'])for(const lang of ['en','de','pl'])assert.ok(redirects.includes(`/${v}/${lang}/checkout/ /${v}/${lang}/product/ 302`));
 });

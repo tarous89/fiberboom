@@ -37,3 +37,5 @@ There are 36 landing/product routes: `/{light,boom,psyllium,lightx,boomx,psylliu
 Standard EUR packs (7/14/30): 12.50 / 22.90 / 45.90; X: 15.50 / 28.90 / 54.90. Standard PLN: 55 / 99 / 199; X: 69 / 125 / 249. `catalog.json` owns both price levels; the Worker independently validates the version-specific price. `scripts/price-variants.mjs` generates X pages, the root, localized alternate links and the full sitemap after translation. Edit sources, not `dist`.
 
 The analytics dashboard shows landing, product-page and selected-offer conversion funnels alongside time/scroll metrics. See `ANALYTICS-SETUP.md`. Run `npm run build` and `node --test tests/*.test.mjs` before deploying through the production Cloudflare Git build.
+
+Country defaults: English/root → International/USD, German → Germany/EUR, Polish → Poland/PLN. Selector options Austria/EUR and Switzerland/CHF share German routes with their explicit market parameter. USD standard 7/14/30: 15.90/28.90/57.90; X: 19.50/36.50/68.90. CHF amounts match EUR numerical prices. New destination shipping is calculated by destination; rates are pending. The dashboard includes a storefront-country filter.

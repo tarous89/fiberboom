@@ -35,6 +35,12 @@ export async function buildPriceVariants(){
  for(const version of [...concepts,...concepts.map(v=>v+'x')])for(const language of languages)for(const page of ['','product/']){
   const route=`/${version}/${language}/${page}`,path=`dist${route}index.html`;
   let html=await readFile(path,'utf8');
+  if(language==='en'){
+   const level=version.endsWith('x')?'xPrices':'prices';
+   for(const bars of catalog.packs){const before=catalog.markets.DE[level][bars],after=catalog.markets.INT[level][bars];
+    for(const [oldValue,newValue] of [[before,after],[before/bars,after/bars]])html=html.replaceAll(`€${(oldValue/100).toFixed(2)}`,new Intl.NumberFormat('en',{style:'currency',currency:'USD'}).format(newValue/100));
+   }
+  }
   const alternates=languages.map(lang=>`<link rel="alternate" hreflang="${lang}" href="https://fiberboom.com/${version}/${lang}/${page}">`).join('');
   html=html.replace('</head>',alternates+'</head>');await writeFile(path,html);routes.push(route);
  }

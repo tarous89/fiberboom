@@ -107,6 +107,11 @@
         "7": 1550,
         "14": 2890,
         "30": 5490
+      },
+      "deliveryText": {
+        "en": "Home delivery with DHL across Germany.",
+        "de": "Lieferung mit DHL innerhalb Deutschlands.",
+        "pl": "Dostawa kurierem DHL na terenie Niemiec."
       }
     },
     "PL": {
@@ -150,6 +155,137 @@
         "7": 6900,
         "14": 12500,
         "30": 24900
+      },
+      "deliveryText": {
+        "en": "Delivery across Poland: choose an InPost parcel locker or home delivery with InPost / DPD.",
+        "de": "Lieferung in Polen: an einen InPost-Paketautomaten oder mit InPost / DPD nach Hause.",
+        "pl": "Dostawa na terenie Polski: do Paczkomatu InPost lub kurierem InPost / DPD."
+      }
+    },
+    "AT": {
+      "name": "Austria",
+      "currency": "EUR",
+      "prices": {
+        "7": 1250,
+        "14": 2290,
+        "30": 4590
+      },
+      "delivery": [
+        {
+          "id": "at-home",
+          "name": "Home delivery",
+          "description": "Shipping calculated by destination",
+          "fee": null
+        }
+      ],
+      "payments": [
+        "Credit / debit card",
+        "PayPal",
+        "Klarna",
+        "Apple Pay",
+        "Google Pay",
+        "SEPA Direct Debit",
+        "Bank transfer"
+      ],
+      "preferredLanguage": "de",
+      "shipping": {
+        "fee": null,
+        "freeFrom": null,
+        "status": "pending"
+      },
+      "xPrices": {
+        "7": 1550,
+        "14": 2890,
+        "30": 5490
+      },
+      "deliveryText": {
+        "en": "Home delivery across Austria. Shipping is calculated by destination.",
+        "de": "Lieferung nach Österreich. Die Versandkosten werden je nach Lieferadresse berechnet.",
+        "pl": "Dostawa do Austrii. Koszt dostawy zależy od adresu."
+      }
+    },
+    "CH": {
+      "name": "Switzerland",
+      "currency": "CHF",
+      "prices": {
+        "7": 1250,
+        "14": 2290,
+        "30": 4590
+      },
+      "delivery": [
+        {
+          "id": "ch-home",
+          "name": "Home delivery",
+          "description": "Shipping calculated by destination",
+          "fee": null
+        }
+      ],
+      "payments": [
+        "Credit / debit card",
+        "PayPal",
+        "Klarna",
+        "Apple Pay",
+        "Google Pay",
+        "SEPA Direct Debit",
+        "Bank transfer"
+      ],
+      "preferredLanguage": "de",
+      "shipping": {
+        "fee": null,
+        "freeFrom": null,
+        "status": "pending"
+      },
+      "xPrices": {
+        "7": 1550,
+        "14": 2890,
+        "30": 5490
+      },
+      "deliveryText": {
+        "en": "Delivery to Switzerland. Shipping is calculated by destination.",
+        "de": "Lieferung in die Schweiz. Die Versandkosten werden je nach Lieferadresse berechnet.",
+        "pl": "Dostawa do Szwajcarii. Koszt dostawy zależy od adresu."
+      }
+    },
+    "INT": {
+      "name": "International",
+      "currency": "USD",
+      "prices": {
+        "7": 1590,
+        "14": 2890,
+        "30": 5790
+      },
+      "delivery": [
+        {
+          "id": "int-home",
+          "name": "Home delivery",
+          "description": "Shipping calculated by destination",
+          "fee": null
+        }
+      ],
+      "payments": [
+        "Credit / debit card",
+        "PayPal",
+        "Klarna",
+        "Apple Pay",
+        "Google Pay",
+        "SEPA Direct Debit",
+        "Bank transfer"
+      ],
+      "preferredLanguage": "en",
+      "shipping": {
+        "fee": null,
+        "freeFrom": null,
+        "status": "pending"
+      },
+      "xPrices": {
+        "7": 1950,
+        "14": 3650,
+        "30": 6890
+      },
+      "deliveryText": {
+        "en": "International delivery, including Switzerland. Shipping is calculated by destination.",
+        "de": "Internationaler Versand, auch in die Schweiz. Die Versandkosten werden je nach Lieferadresse berechnet.",
+        "pl": "Dostawa międzynarodowa, również do Szwajcarii. Koszt dostawy zależy od adresu."
       }
     }
   },
@@ -191,9 +327,9 @@
       "footer": "Real fiber. Real taste. Real boom."
     }
   },
-  "revision": "2026-10-04-price-levels-v3",
+  "revision": "2026-10-04-international-v4",
   "localization": {
-    "defaultMarket": "DE",
+    "defaultMarket": "INT",
     "defaultLanguage": "en",
     "publishedLanguages": [
       "en",
