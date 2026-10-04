@@ -39,3 +39,7 @@ Standard EUR packs (7/14/30): 12.50 / 22.90 / 45.90; X: 15.50 / 28.90 / 54.90. S
 The analytics dashboard shows landing, product-page and selected-offer conversion funnels alongside time/scroll metrics. See `ANALYTICS-SETUP.md`. Run `npm run build` and `node --test tests/*.test.mjs` before deploying through the production Cloudflare Git build.
 
 Country defaults: English/root → International/USD, German → Germany/EUR, Polish → Poland/PLN. Selector options Austria/EUR and Switzerland/CHF share German routes with their explicit market parameter. USD standard 7/14/30: 15.90/28.90/57.90; X: 19.50/36.50/68.90. CHF amounts match EUR numerical prices. Shipping: AT EUR 3.50/free from 30; CH CHF 3.50/free from 30; INT USD 4/free from 34. The dashboard includes a storefront-country filter.
+
+## Advertising split test
+
+Use `/en/`, `/de/` or `/pl/` in ads (slashless forms also work). Cloudflare serves one of all six versions directly with HTTP 200; no browser redirect. New browsers receive a uniform random assignment, remembered per language for 90 days in `fb_experiment_v1_{lang}`. Counts are approximately equal, not quota-balanced. Explicit version URLs and the homepage are unchanged. Campaign parameters and click IDs survive product navigation. The admin landing funnel groups these entry paths by assigned version and language. These ad-only URLs are intentionally excluded from the canonical sitemap.

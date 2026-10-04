@@ -12,7 +12,7 @@ export async function funnelReport(db,where,args,{variant,language}){
  // session, language and price variant. Repeated clicks never inflate browser counts.
  const filtered=`WITH filtered AS (SELECT * FROM events WHERE ${where} AND name IN ('page_view','product_view','product_click','cta_click','checkout_started','checkout_intent','market_selected'))`;
  const match=(alias,cohort)=>`${alias}.visitor=${cohort}.visitor AND ${alias}.session=${cohort}.session AND ${alias}.variant=${cohort}.variant AND ${alias}.language=${cohort}.language`;
- const landingPaths=['/',...concepts.flatMap(v=>languages.map(l=>`/${v}/${l}/`))];
+ const landingPaths=['/','/en/','/de/','/pl/',...concepts.flatMap(v=>languages.map(l=>`/${v}/${l}/`))];
  const landingSql=`${filtered},
  landings AS (SELECT visitor,session,path,variant,language,MIN(time) started FROM filtered WHERE name IN ('page_view','market_selected') AND path IN (${landingPaths.map(p=>`'${p}'`).join(',')}) GROUP BY visitor,session,path,variant,language),
  clicks AS (SELECT l.*,(SELECT MIN(c.time) FROM filtered c WHERE ${match('c','l')} AND c.path=l.path AND c.time>=l.started AND (c.name='product_click' OR (c.name='cta_click' AND json_extract(c.details,'$.destination') LIKE '%/product/%'))) clicked,

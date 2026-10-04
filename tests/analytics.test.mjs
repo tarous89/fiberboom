@@ -136,3 +136,16 @@ test('privacy notice interactions persist and appear in existing event reports',
  assert.equal((await worker.fetch(req('/api/events',{events:[first,...events]}),e)).status,200);
  const cookie=await login(e),data=await (await worker.fetch(req('/api/admin/report',null,cookie),e)).json();assert.equal(data.totals.events,4);assert.equal(data.totals.views,1);for(const name of names)assert.equal(data.events.find(row=>row.name===name).count,1);
 });
+
+test('randomized language entries retain version attribution through every funnel stage',async()=>{
+ for(const language of ['en','de','pl'])for(const version of Object.keys(catalog.versions)){
+  const e=env(),base=event(),path='/'+language+'/',product=`/${version}/${language}/product/`,market={en:'INT',de:'DE',pl:'PL'}[language],m=catalog.markets[market],price=m[version.endsWith('x')?'xPrices':'prices'][14];
+  const make=(name,seq,p=path,details={})=>event({visitor:base.visitor,session:base.session,page:p===path?base.page:productPage,path:p,variant:version,language,name,seq,details});const productPage=crypto.randomUUID();
+  const events=[make('page_view',1,path,{experiment:'landing-v1',ttclid:'test-click'}),make('product_click',2,path,{destination:product}),make('page_view',3,product),make('checkout_started',4,product)];
+  assert.equal((await worker.fetch(req('/api/events',{events}),e)).status,200);
+  const body={id:crypto.randomUUID(),token:crypto.randomUUID(),version,language,flavor:'date',bars:14,market,price,currency:m.currency,revision:catalog.revision,context:{visitor:base.visitor,session:base.session,page:productPage}};
+  assert.equal((await worker.fetch(req('/api/checkout-intent',body),e)).status,200);assert.equal((await worker.fetch(req('/api/checkout-intent',{...body,email:'randomizer@example.com',consent:true}),e)).status,200);
+  const cookie=await login(e),data=await (await worker.fetch(req(`/api/admin/report?variant=${version}&language=${language}`,null,cookie),e)).json();
+  const row=data.funnels.landings.find(r=>r.path===path&&r.variant===version);assert.ok(row);assert.deepEqual([row.viewers,row.product_clickers,row.product_viewers,row.order_clickers,row.email_signups],[1,1,1,1,1]);assert.equal(data.totals.views,2);
+ }
+});

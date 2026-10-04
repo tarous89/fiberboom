@@ -26,3 +26,10 @@
 
 - Banner now shows Approve and Decline, localized as Zustimmen/Ablehnen and Akceptuję/Odrzuć. Approval emits privacy_notice_approved; legacy privacy_notice_dismissed remains accepted for already-open pages and historical records. Other analytics behavior is unchanged.
 - Public site no longer names the company email provider; the policy still discloses email service providers.
+
+## 2026-10-04 — Advertising randomizer
+
+- Approved equal random assignment among all six versions per language at `/en/`, `/de/`, `/pl/`. Serve the canonical HTML internally with HTTP 200, preserve query parameters, and retain canonical assets/product links. No browser redirect and no reviewer-specific behavior.
+- A validated first-party HttpOnly cookie remembers each language assignment for a fixed 90 days. Expired or invalid values are reassigned. Response is private/no-store with conditional asset headers removed to prevent cached assignments being shared. Workers runs first on all six entry-path spellings.
+- Homepage and explicit version URLs remain deterministic; a return through an ad entry reuses the assignment. Different browsers or cleared cookies cannot be matched reliably. Ad routes stay out of the canonical sitemap.
+- Analytics now attributes entry paths to their rendered version and language, extending existing funnels without double-counting views. Campaign/click IDs persist into product navigation and offer capture.

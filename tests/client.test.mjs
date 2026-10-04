@@ -1,8 +1,8 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';import vm from 'node:vm';import {readFileSync} from 'node:fs';
 const script=readFileSync(new URL('../site/analytics.js',import.meta.url),'utf8');
-function browser(storage=new Map(),start=Date.now(),search='?utm_source=invite&email=private'){
- let elapsed=0;const timers=[],handlers={},requests=[];const doc={hidden:false,documentElement:{lang:'en',scrollHeight:2000},referrer:'https://example.com/private?secret=yes',addEventListener:(n,f)=>handlers[n]=f,querySelector:()=>null};
- const context={crypto,URL,URLSearchParams,Date:class extends Date{static now(){return start+elapsed}},performance:{now:()=>elapsed},location:{pathname:'/',search,origin:'https://fiberboom.com'},document:doc,innerHeight:1000,scrollY:0,localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},setInterval:(f,ms)=>timers.push({f,ms}),addEventListener:(n,f)=>handlers[n]=f,requestAnimationFrame:f=>f(),fetch:async(url,options)=>{requests.push(JSON.parse(options.body));return {ok:true}}};vm.runInNewContext(script,context);
+function browser(storage=new Map(),start=Date.now(),search='?utm_source=invite&email=private',pathname='/',version='lightx',language='en'){
+ let elapsed=0;const timers=[],handlers={},requests=[];const doc={hidden:false,body:{dataset:{version}},documentElement:{lang:language,scrollHeight:2000},referrer:'https://example.com/private?secret=yes',addEventListener:(n,f)=>handlers[n]=f,querySelector:()=>null};
+ const context={crypto,URL,URLSearchParams,Date:class extends Date{static now(){return start+elapsed}},performance:{now:()=>elapsed},location:{pathname,search,origin:'https://fiberboom.com'},document:doc,innerHeight:1000,scrollY:0,localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},setInterval:(f,ms)=>timers.push({f,ms}),addEventListener:(n,f)=>handlers[n]=f,requestAnimationFrame:f=>f(),fetch:async(url,options)=>{requests.push(JSON.parse(options.body));return {ok:true}}};vm.runInNewContext(script,context);
  return {doc,context,requests,handlers,async tick(seconds){for(let i=0;i<seconds;i++){elapsed+=1000;for(const t of timers)if(elapsed%t.ms===0)t.f();await Promise.resolve();await Promise.resolve()}},events(){return requests.flatMap(x=>x.events)}};
 }
 test('tracking starts without banner choice, caps time, excludes background time and sends scroll milestones',async()=>{const b=browser();await b.tick(30);b.doc.hidden=true;b.handlers.visibilitychange();await b.tick(300);b.doc.hidden=false;b.handlers.visibilitychange();await b.tick(30);assert.ok(b.events().every(e=>e.active<=60));b.context.scrollY=1000;b.handlers.scroll();await b.tick(600);assert.equal(Math.max(...b.events().map(e=>e.active)),600);assert.equal(b.events().filter(e=>e.name==='scroll_depth').length,10);assert.equal(b.events().find(e=>e.name==='page_view').details.referrer,'example.com');assert.ok(!JSON.stringify(b.events()).includes('private'));assert.ok(!JSON.stringify(b.events()).includes('email='))});
@@ -18,3 +18,8 @@ test('privacy notice choices and policy link are tracked once without interrupti
  assert.deepEqual(b.events().filter(e=>e.name.startsWith('privacy_notice_')).map(e=>e.name),['privacy_notice_declined','privacy_notice_approved','privacy_notice_policy_click']);
  await b.tick(30);assert.ok(b.events().some(e=>e.name==='active_time'&&e.active>=15));assert.ok(b.events().filter(e=>e.name.startsWith('privacy_notice_')).every(e=>e.details.utm_source==='invite'&&e.path==='/'));
 });
+
+ test('ad entry records exactly one landing view with its real version, language and campaign',()=>{
+ for(const language of ['en','de','pl'])for(const version of ['light','psyllium','boom','lightx','psylliumx','boomx']){
+ const b=browser(new Map(),Date.now(),'?utm_source=tiktok&ttclid=abc123','/'+language,version,language);const views=b.events().filter(e=>e.name==='page_view');assert.equal(views.length,1);assert.equal(views[0].path,'/'+language+'/');assert.equal(views[0].variant,version);assert.equal(views[0].language,language);assert.equal(views[0].details.experiment,'landing-v1');assert.equal(views[0].details.ttclid,'abc123');
+ }});
