@@ -33,3 +33,8 @@
 - A validated first-party HttpOnly cookie remembers each language assignment for a fixed 90 days. Expired or invalid values are reassigned. Response is private/no-store with conditional asset headers removed to prevent cached assignments being shared. Workers runs first on all six entry-path spellings.
 - Homepage and explicit version URLs remain deterministic; a return through an ad entry reuses the assignment. Different browsers or cleared cookies cannot be matched reliably. Ad routes stay out of the canonical sitemap.
 - Analytics now attributes entry paths to their rendered version and language, extending existing funnels without double-counting views. Campaign/click IDs persist into product navigation and offer capture.
+
+## 2026-10-05 — Google Ads base tag
+
+- User supplied AW-18365157703 and deferred Meta. Installed the base tag behind explicit advertising approval; first-party analytics remains unchanged. Banner and privacy copy distinguish the two.
+- Prepared Product ($0 USD) and Order click ($10 USD), once per page regardless of flavor/pack. Real Google conversion labels are still required; local dataLayer hooks must not be represented as active Ads conversions.
