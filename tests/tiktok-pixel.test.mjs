@@ -24,12 +24,13 @@ test('button-navigation event tracks once; product pages and order clicks do not
  const b=browser();b.click('https://fiberboom.com/lightx/en/product/',true);b.commerce('/lightx/en/product/');assert.equal(b.tracks().length,1);
  for(const path of ['/lightx/en/product/','/privacy/en/','/admin']){const p=browser({path,kind:path.includes('/product/')?'product':''});p.click('https://fiberboom.com/lightx/en/product/');p.commerce('/lightx/en/product/');assert.equal(p.tracks().length,0)}
 });
-test('shared approval, expiry, decline and reapproval control loading and conversion',()=>{
+test('TikTok starts without approval and does not read or alter the existing banner choice',()=>{
  for(const saved of [null,{approved:false,expires:Date.now()+10000},{approved:true,expires:1}]){
-  const b=browser({saved});b.commerce('/lightx/en/product/');assert.equal(b.scripts.length,0);assert.equal(b.tracks().length,0);
-  b.choose('fb-beta-notice-approve');b.commerce('/lightx/en/product/');assert.equal(b.tracks().length,1);
-  b.choose('fb-beta-notice-decline');b.commerce('/lightx/en/product/');assert.equal(b.tracks().length,1);assert.ok(b.commands().some(c=>c[0]==='revokeConsent'));
-  b.choose('fb-beta-notice-approve');b.commerce('/lightx/en/product/');assert.equal(b.tracks().length,2);assert.equal(b.scripts.length,1);assert.equal(b.commands().filter(c=>c[0]==='page').length,1);
+  const b=browser({saved});assert.equal(b.scripts.length,1);assert.equal(b.tracks().length,0);
+  b.commerce('/lightx/en/product/');assert.equal(b.tracks().length,1);
+  b.choose('fb-beta-notice-approve');b.choose('fb-beta-notice-decline');
+  assert.equal(b.scripts.length,1);assert.equal(b.commands().filter(c=>c[0]==='page').length,1);
+  assert.ok(!b.commands().some(c=>c[0]==='grantConsent'||c[0]==='revokeConsent'));
  }
 });
 test('every generated storefront includes Google and TikTok exactly once',()=>{
