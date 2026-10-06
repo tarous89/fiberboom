@@ -25,7 +25,7 @@ async function addNotice(directory){
   else if(entry.name.endsWith('.html')){
    let html=applyShared(await readFile(path,'utf8'));
    html=html.replace('</head>','<link rel="stylesheet" href="/beta-notice.css"></head>');
-   html=html.replace('</body>',notice+'<script defer src="/beta-notice.js"></script><script defer src="/google-ads.js"></script><script defer src="/analytics.js"></script></body>');
+   html=html.replace('</body>',notice+'<script defer src="/beta-notice.js"></script><script defer src="/google-ads.js"></script><script defer src="/tiktok-pixel.js"></script><script defer src="/analytics.js"></script></body>');
    await writeFile(path,html);
   }
  }
