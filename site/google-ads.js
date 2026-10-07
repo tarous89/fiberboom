@@ -1,8 +1,8 @@
-// Google Ads base tag. Conversion labels must come from the two Google Ads actions.
+// Google Ads actions supplied by the owner: product view = Begin checkout; order click = Add to cart.
 (()=>{
  if(location.pathname.startsWith('/admin'))return;
  const account='AW-18365157703';
- const conversions={product:{label:'',value:0},order:{label:'',value:10}};
+ const conversions={product:{label:'cI69CIWkhJIdEMeimLVE',value:1},order:{label:'nEV6CIikhJIdEMeimLVE',value:1}};
  const storageKey='fb_google_ads_consent_v1';
  let approved=false,loaded=false,productSeen=document.body?.dataset.commercePage==='product';
  const sent=new Set();
@@ -14,8 +14,8 @@
   if(!approved||sent.has(action))return;
   sent.add(action);const c=conversions[action];
   // This local dataLayer event is NOT a Google Ads conversion without its label.
-  window.dataLayer.push({event:'fiberboom_'+action,value:c.value,currency:'USD',page_variant:document.body?.dataset.version||'',page_language:document.documentElement.lang});
-  if(c.label)window.gtag('event','conversion',{send_to:account+'/'+c.label,value:c.value,currency:'USD',transaction_id:crypto.randomUUID()});
+  window.dataLayer.push({event:'fiberboom_'+action,value:c.value,currency:'PLN',page_variant:document.body?.dataset.version||'',page_language:document.documentElement.lang});
+  if(c.label)window.gtag('event','conversion',{send_to:account+'/'+c.label,value:c.value,currency:'PLN',transaction_id:crypto.randomUUID()});
  }
  function enable(){
   window.gtag('consent','update',consent('granted'));

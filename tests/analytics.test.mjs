@@ -149,3 +149,25 @@ test('randomized language entries retain version attribution through every funne
   const row=data.funnels.landings.find(r=>r.path===path&&r.variant===version);assert.ok(row);assert.deepEqual([row.viewers,row.product_clickers,row.product_viewers,row.order_clickers,row.email_signups],[1,1,1,1,1]);assert.equal(data.totals.views,2);
  }
 });
+
+test('detail opens persist in journeys and CTA reports; unique totals and ordered-after semantics',async()=>{
+ const e=env(),base=event({path:'/light/en/product/',variant:'light'}),t=Date.now()-10000;
+ const ev=(name,seq,details={})=>event({...base,id:crypto.randomUUID(),name,seq,time:t+seq,details});
+ const rows=[ev('page_view',1),ev('product_view',2),ev('checkout_started',3),ev('product_detail_open',4,{section:'ingredients',label:'Ingredients',interaction:'detail_open'}),ev('product_detail_open',5,{section:'ingredients'}),ev('market_selected',6)];
+ const other=event({path:'/boom/de/product/',variant:'boom',name:'product_detail_open',details:{section:'shipping'},time:t+2});
+ rows.push(other,event({...other,id:crypto.randomUUID(),name:'checkout_started',seq:2,time:t+3}),event({...base,id:crypto.randomUUID(),path:'/boom/en/product/',variant:'boom',name:'page_view',time:t+7}));
+ assert.equal((await worker.fetch(req('/api/events',{events:rows}),e)).status,200);
+ const cookie=await login(e),read=async q=>(await (await worker.fetch(req('/api/admin/report'+q,null,cookie),e)).json());
+ const d=await read('');assert.equal(d.engagement.totals.product_viewers,1);assert.equal(d.engagement.totals.order_clickers,2);
+ const ingredients=d.engagement.details.find(x=>x.section==='ingredients');assert.equal(ingredients.opens,2);assert.equal(ingredients.browsers,1);assert.equal(ingredients.order_clickers,0);assert.equal(d.engagement.details.find(x=>x.section==='shipping').order_clickers,1);
+ assert.equal(d.engagement.ctas.find(x=>x.label==='ingredients').count,2);
+ const filtered=await read('?language=de');assert.equal(filtered.engagement.details.length,1);assert.equal(filtered.engagement.totals.order_clickers,1);
+ const journey=await (await worker.fetch(req('/api/admin/journey?visitor='+base.visitor,null,cookie),e)).json();assert.ok(journey.events.some(x=>x.name==='product_detail_open'&&JSON.parse(x.details).section==='ingredients'));
+});
+
+test('market selection alone is not an order in product or landing funnels',async()=>{
+ const e=env(),base=event({path:'/light/en/',variant:'light'}),t=Date.now()-10000,product=crypto.randomUUID();
+ const rows=[base,event({...base,id:crypto.randomUUID(),page:product,path:'/light/en/product/',time:t+1}),event({...base,id:crypto.randomUUID(),page:product,path:'/light/en/product/',name:'market_selected',time:t+2})];rows[0].time=t;
+ await worker.fetch(req('/api/events',{events:rows}),e);const cookie=await login(e),d=await (await worker.fetch(req('/api/admin/report',null,cookie),e)).json();
+ assert.equal(d.engagement.totals.order_clickers,0);assert.equal(d.funnels.products.find(x=>x.path==='/light/en/product/').order_clickers,0);assert.equal(d.funnels.landings.find(x=>x.path==='/light/en/').order_clickers,0);
+});

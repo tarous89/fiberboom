@@ -37,3 +37,11 @@ $('restock-dialog').addEventListener('click',e=>{if(e.target===$('restock-dialog
 $('restock-form').addEventListener('submit',async e=>{e.preventDefault();const intent=selectedIntent;if(!intent)return;const email=$('restock-email').value.trim();const button=e.currentTarget.querySelector('button');button.disabled=true;$('restock-status').textContent='Saving your spot…';try{if(saving)await saving;await saveIntent(intent,email);intent.email=email;if(selectedIntent===intent){$('restock-form').hidden=true;$('restock-status').textContent="You're on the list! We'll email you when we're back, with your 30% offer.";}}catch(error){$('restock-status').textContent=error.message;}finally{button.disabled=false;}});
 document.querySelector('a[href="#ingredients-panel"]').addEventListener('click',()=>{$('ingredients-panel').open=true});
 render();
+
+// Native toggle observes mouse, keyboard, and programmatic accordion opening.
+if(kind==='product'){
+ for(const panel of document.querySelectorAll('details[data-detail]'))panel.addEventListener('toggle',()=>{
+  if(panel.open)track('product_detail_open',{section:panel.dataset.detail,label:panel.querySelector('summary').textContent.trim(),interaction:'detail_open'});
+ });
+ document.querySelector('a[href="#ingredients-panel"]')?.addEventListener('click',()=>{$('ingredients-panel').open=true});
+}

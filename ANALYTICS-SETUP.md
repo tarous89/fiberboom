@@ -49,3 +49,14 @@ Randomizer: `/en/`, `/de/`, `/pl/` events retain the actual entry path and rende
 ## Google Ads — 2026-10-05
 
 `site/google-ads.js` configures AW-18365157703 after explicit banner approval (choice remembered 90 days); advertising personalization is denied. The privacy page provides a choice-reset button. This does not gate first-party analytics. Product and Order hooks push local `fiberboom_product` ($0 USD) and `fiberboom_order` ($10 USD) dataLayer events, once each per product-page load, independent of pack/flavor. Order means button click, not purchase. Both conversion labels are empty pending the user's Google Ads event snippets: no Google conversion request is sent until real labels are supplied. The account-level base tag alone does not create those conversion actions. Meta is deferred.
+
+## Product detail engagement — 2026-10-07
+
+All 18 product routes emit `product_detail_open` on native accordion opening (including keyboard and the ingredients jump link), with stable `section` IDs: ingredients, nutrition, shipping, payment, returns. Events carry the existing browser/session/page, offer, market and campaign context and appear in journeys, event totals, a dedicated CTA table, and a detail engagement table. Detail outcomes match a strictly later order event on the same page/session; they are associations, not proof of abandonment or its cause. Historical accordion opens cannot be reconstructed.
+
+Dashboard headline cards now count unique browsers, product viewers, order clickers and saved-email browsers across the selection, without summing per-page counts. Orders mean restock-popup clicks, not purchases. Market changes no longer qualify as orders in the landing/product funnels. Existing filters apply to the new report fields (`engagement` in JSON export).
+
+Live Google Ads script inspected October 7: Product and Order conversion labels remain empty. The base tag and local dataLayer hooks cannot send the intended labeled conversions until actual Google Ads event snippets are provided. Explicit approval still gates Google advertising measurement independently of first-party analytics.
+
+### Google Ads labels activated — 2026-10-07
+Owner supplied and authorized both action snippets: product-page view → `AW-18365157703/cI69CIWkhJIdEMeimLVE` (Google action named Begin checkout); Order click → `AW-18365157703/nEV6CIikhJIdEMeimLVE` (named Add to cart). Both use fixed value 1 PLN, superseding the prepared 0/10 USD values. Existing explicit-approval requirement and once-per-action-per-page-load deduplication remain. No historical conversion replay.

@@ -38,3 +38,12 @@
 
 - User supplied AW-18365157703 and deferred Meta. Installed the base tag behind explicit advertising approval; first-party analytics remains unchanged. Banner and privacy copy distinguish the two.
 - Prepared Product ($0 USD) and Order click ($10 USD), once per page regardless of flavor/pack. Real Google conversion labels are still required; local dataLayer hooks must not be represented as active Ads conversions.
+
+## 2026-10-07 — Product detail tracking and conversion dashboard
+- Added named product accordion-open events across EN/DE/PL and original/X versions, with browser journeys, CTA counts, and subsequent same-page order-click outcomes.
+- Dashboard headline cards prioritize unique browsers → product viewers → order clickers → saved-email browsers. These measure purchase interest; no completed-payment claim.
+- Fixed market-selected events incorrectly qualifying as orders in landing/product funnels.
+- Verified live Google Ads Product/Order labels are empty; real action snippets still required. No invented labels or historical conversions; advertising consent behavior preserved.
+
+### Google Ads labels activated — 2026-10-07
+Owner supplied and authorized both action snippets: product-page view → `AW-18365157703/cI69CIWkhJIdEMeimLVE` (Google action named Begin checkout); Order click → `AW-18365157703/nEV6CIikhJIdEMeimLVE` (named Add to cart). Both use fixed value 1 PLN, superseding the prepared 0/10 USD values. Existing explicit-approval requirement and once-per-action-per-page-load deduplication remain. No historical conversion replay.
