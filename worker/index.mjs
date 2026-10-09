@@ -1,4 +1,5 @@
 import {engagementReport} from './engagement.mjs';
+import {fullExport} from './export.mjs';
 import {randomLanding} from './randomizer.mjs';
 import {audience} from './audience.mjs';
 import catalog from '../site/commerce/catalog.json' with {type:'json'};
@@ -102,6 +103,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  if(!await authorized(request,env))return json({error:'Sign in required'},401);
  if(path==='/api/admin/logout'&&request.method==='POST')return json({ok:true},200,{'Set-Cookie':'fb_admin=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict'});
  if(request.method!=='GET')return json({error:'Method not allowed'},405);
+ if(path==='/api/admin/export')return fullExport(env.DB,headers);
  if(path==='/api/admin/report')return json(await report(env.DB,url));
  if(path==='/api/admin/journey'){
  const visitor=url.searchParams.get('visitor');if(!idOk(visitor))return json({error:'Invalid visitor'},400);

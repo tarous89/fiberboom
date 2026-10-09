@@ -1,5 +1,11 @@
 # Activate Fiberboom beta analytics
 
+## Full raw download — 2026-10-09
+
+Signed-in admins can use **Download full data** to download a JSON file from `/api/admin/export`. This includes every retained `events` row and every retained `checkout_intents` record, with browser/session/page identifiers, original timestamps, raw JSON details/campaign columns, offer prices and saved emails. Dashboard filters are deliberately ignored so the file supports independent cohort analysis. Normal retention remains 90 days; previously deleted history cannot be recovered.
+
+The export excludes checkout authentication token hashes and rate-limit records. It uses the existing admin authorization, attachment/no-store headers, and bounded rowid pagination without the report's 100/1,000/2,000-row limits. Each table is bounded at export start; existing order records can still be updated during downloading. Counts and a final `complete` marker allow the browser to reject incomplete downloads; retry if retention deletes rows during export. Prices are minor currency units and timestamps are UTC Unix milliseconds. The existing **Export report** continues to download the filtered summary.
+
 The Worker implements first-party event collection and a server-protected `/admin` dashboard. No PostHog subscription or credentials are required. Tracking relies on consent obtained through beta invitations before participation. The banner only informs; it does not enable, disable or record consent. Keep invitation consent records and arrange withdrawal requests through privacy@fiberboom.com. Before opening to non-consenting/public visitors, implement a public consent workflow.
 
 ## Cloudflare setup

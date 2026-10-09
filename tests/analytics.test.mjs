@@ -14,6 +14,32 @@ const env=()=>({DB:new D1(),ADMIN_PIN:'test-only-pin',SESSION_SECRET:'test-only-
 const req=(path,body,cookie)=>new Request(host+path,{method:body?'POST':'GET',headers:{Origin:host,'Content-Type':'application/json','CF-Connecting-IP':'192.0.2.1',...(cookie?{Cookie:cookie}:{})},...(body?{body:JSON.stringify(body)}:{})});
 async function login(e){const r=await worker.fetch(req('/api/admin/login',{pin:e.ADMIN_PIN}),e);assert.equal(r.status,200);return r.headers.get('set-cookie').split(';')[0]}
 const event=(overrides={})=>({id:crypto.randomUUID(),visitor:crypto.randomUUID(),session:crypto.randomUUID(),page:crypto.randomUUID(),seq:1,name:'page_view',path:'/',active:0,scroll:0,time:Date.now(),details:{persistent:true},...overrides});
+test('full export requires admin auth and includes all rows beyond report limits without credentials',async()=>{
+ const e=env();assert.equal((await worker.fetch(req('/api/admin/export'),e)).status,401);
+ const cookie=await login(e),now=Date.now();
+ const insertEvent=e.DB.db.prepare('INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+ const insertIntent=e.DB.db.prepare('INSERT INTO checkout_intents VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+ for(let i=0;i<2105;i++)insertEvent.run('event-'+i,now,now,'visitor','session','page',i+1,'flavour_selected','/light/pl/product/','light','pl',10,20,JSON.stringify({utm_source:i%2?'google1':'tiktok',flavor_id:'pistachio'}));
+ for(let i=0;i<1005;i++)insertIntent.run('intent-'+i,'private-token-hash',now,now,'light','pl','pistachio',14,9900,'PLN','PL','revision','test@example.com',now,'consent','visitor','session','page','{"utm_source":"google1"}');
+ const response=await worker.fetch(req('/api/admin/export?days=1&utm_source=google1',null,cookie),e);
+ assert.equal(response.status,200);assert.match(response.headers.get('Content-Disposition'),/attachment; filename="fiberboom-full-data-/);assert.equal(response.headers.get('Cache-Control'),'no-store');
+ const d=await response.json();assert.equal(d.complete,true);assert.deepEqual(d.counts,{events:2105,checkout_intents:1005});
+ assert.equal(new Set(d.events.map(x=>x.id)).size,2105);assert.equal(d.events[2104].seq,2105);
+ assert.equal(d.checkout_intents[1004].email,'test@example.com');assert.equal(d.checkout_intents[0].session,'session');
+ assert.ok(d.events.some(x=>JSON.parse(x.details).utm_source==='tiktok'));
+ assert.ok(!JSON.stringify(d).includes('private-token-hash'));assert.ok(!('token_hash' in d.checkout_intents[0]));assert.ok(!('limits' in d));
+ assert.match(adminPage(true,true,'nonce'),/Download full data/);assert.ok(!adminPage(false,true,'nonce').includes('Download full data'));
+});
+test('full export bounds new rows and fails rather than claiming completeness after deletion',async()=>{
+ const e=env(),cookie=await login(e);
+ await worker.fetch(req('/api/events',{events:[event()]}),e);
+ const response=await worker.fetch(req('/api/admin/export',null,cookie),e);
+ await worker.fetch(req('/api/events',{events:[event()]}),e);
+ assert.equal((await response.json()).events.length,1);
+ const interrupted=await worker.fetch(req('/api/admin/export',null,cookie),e);
+ e.DB.db.exec('DELETE FROM events');
+ await assert.rejects(()=>interrupted.json(),/Analytics changed during export/);
+});
 test('missing setup fails closed; public pages still work',async()=>{const e=env();delete e.DB;assert.equal((await worker.fetch(req('/api/events',{events:[event()]}),e)).status,503);assert.equal(await (await worker.fetch(req('/'),e)).text(),'asset');assert.match(await (await worker.fetch(req('/admin'),e)).text(),/Setup required/)});
 test('authentication, secure cookie, tampering, origin checks, rate limiting',async()=>{const e=env();assert.equal((await worker.fetch(req('/api/admin/report'),e)).status,401);assert.equal((await worker.fetch(req('/api/admin/login',{pin:'wrong'}),e)).status,401);const r=await worker.fetch(req('/api/admin/login',{pin:e.ADMIN_PIN}),e);assert.match(r.headers.get('set-cookie'),/HttpOnly; Secure; SameSite=Strict/);const cookie=r.headers.get('set-cookie').split(';')[0];assert.equal((await worker.fetch(req('/api/admin/report',null,cookie+'a'),e)).status,401);assert.equal((await worker.fetch(new Request(host+'/api/events',{method:'POST',headers:{Origin:'https://evil.test'},body:'{}'}),e)).status,403);for(let i=0;i<4;i++)await worker.fetch(req('/api/admin/login',{pin:'wrong'}),e);assert.equal((await worker.fetch(req('/api/admin/login',{pin:e.ADMIN_PIN}),e)).status,429)});
 test('events persist once; maxima, returning visits, filters and journeys calculate correctly',async()=>{const e=env();const first=event();const second=event({visitor:first.visitor,path:'/boom/en/'});const engaged=event({visitor:first.visitor,session:first.session,page:first.page,name:'active_time',seq:2,active:600,scroll:80});const batch={events:[first,second,engaged]};assert.equal((await worker.fetch(req('/api/events',batch),e)).status,200);await worker.fetch(req('/api/events',batch),e);const cookie=await login(e);const report=await (await worker.fetch(req('/api/admin/report',null,cookie),e)).json();assert.equal(report.totals.events,3);assert.equal(report.totals.views,2);assert.equal(report.totals.returning_browsers,1);assert.equal(report.visitors[0].lifetime_sessions,2);assert.equal(report.pages.find(p=>p.path==='/').active,600);const filtered=await (await worker.fetch(req('/api/admin/report?variant=boom',null,cookie),e)).json();assert.equal(filtered.totals.views,1);const journey=await (await worker.fetch(req('/api/admin/journey?visitor='+first.visitor,null,cookie),e)).json();assert.equal(journey.events.length,3);assert.equal((await worker.fetch(req('/api/events',{events:[event({path:'/admin'})]}),e)).status,400)});
